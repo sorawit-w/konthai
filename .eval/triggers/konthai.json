@@ -1,0 +1,20 @@
+[
+  {"query": "what does คนไทE บิ€ไก่ฟ ถถถถ mean?", "should_trigger": true},
+  {"query": "decode this ภาษาลู: เลี้ยวดูลึงมูเลอจู ลาภูลาษูลู", "should_trigger": true},
+  {"query": "translate this mangled Thai comment: llนใ7xso?", "should_trigger": true},
+  {"query": "this Thai doesn't parse — เทอแฉเจิงเบอ เค่าจัยเลาจึงๆ — what's it say?", "should_trigger": true},
+  {"query": "what's this obfuscated Thai username trying to say: ค๊นไ_ทย", "should_trigger": true},
+  {"query": "someone DMed me 'Yar tar tai kon tai harharhar' — what does that mean?", "should_trigger": true},
+  {"query": "normal translators give garbage on this Thai ad, can you read it?", "should_trigger": true},
+  {"query": "is หั้นหEEEE actual Thai or just keyboard mashing?", "should_trigger": true},
+  {"query": "decode the สก๊อย text in this screenshot caption", "should_trigger": true},
+
+  {"query": "translate this Thai to English: สวัสดีครับ ยินดีต้อนรับสู่ร้านของเรา", "should_trigger": false},
+  {"query": "what does the word ครับ mean?", "should_trigger": false},
+  {"query": "how do I say 'thank you' in Thai?", "should_trigger": false},
+  {"query": "localize this app — translate the strings in locales/th.json", "should_trigger": false},
+  {"query": "write a friendly Thai welcome message for my landing page", "should_trigger": false},
+  {"query": "proofread this standard Thai paragraph for grammar", "should_trigger": false},
+  {"query": "review my code for bugs", "should_trigger": false},
+  {"query": "what's the difference between ค่ะ and คะ?", "should_trigger": false}
+]

@@ -1,0 +1,31 @@
+{
+  "name": "konthai",
+  "version": "0.1.0",
+  "description": "konthai — reads deliberately obfuscated Thai (ภาษาวิบัติ) and gives you back standard Thai + English. Handles สก๊อย glyph-substitution, phonetic respelling, karaoke-romanized Thai, keyboard-layout collisions, the ภาษาลู cipher, RO-leet, gen-z slang, and คำผวน — on instinct, surfacing confidence and ambiguity honestly and flagging rather than faking when a span can't be cracked.",
+  "author": {
+    "name": "sorawit-w",
+    "url": "https://github.com/sorawit-w"
+  },
+  "homepage": "https://github.com/sorawit-w/konthai",
+  "repository": "https://github.com/sorawit-w/konthai",
+  "license": "MIT",
+  "keywords": ["konthai", "thai", "obfuscated-thai", "ภาษาวิบัติ", "ภาษาลู", "decode", "translation", "glyph-substitution", "slang", "skill"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "konthai",
+    "shortDescription": "Decodes obfuscated Thai (ภาษาวิบัติ) into standard Thai + English — honestly.",
+    "longDescription": "konthai reads deliberately mangled Thai — สก๊อย glyph-substitution, phonetic respelling, karaoke-romanized Thai, keyboard-layout collisions, the ภาษาลู cipher, RO-leet, gen-z slang, and คำผวน — and recovers standard Thai plus an English reading. It surfaces confidence and ambiguity honestly and flags rather than fabricates when a span can't be cracked.",
+    "developerName": "sorawit-w",
+    "category": "Developer Tools",
+    "capabilities": ["Read"],
+    "websiteURL": "https://github.com/sorawit-w/konthai",
+    "defaultPrompt": [
+      "What does this obfuscated Thai comment mean?",
+      "Decode this ภาษาลู into standard Thai.",
+      "Translate this mangled Thai social-media post."
+    ],
+    "brandColor": "#1A1A2E",
+    "composerIcon": "./assets/icon.png",
+    "logo": "./assets/banner.png"
+  }
+}

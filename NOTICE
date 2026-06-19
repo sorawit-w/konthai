@@ -1,0 +1,14 @@
+konthai
+Copyright (c) 2026 sorawit-w
+
+This product is licensed under the MIT License (see LICENSE).
+
+konthai's decode logic and confidence/abstain discipline were calibrated against a
+small, native-speaker-labelled eval set drawn from real obfuscated-Thai social text.
+The ground-truth labels are the work of the repo owner (a native Thai speaker); they
+are authoritative and should not be "corrected" against model intuition.
+
+The repository packaging pattern (single-skill plugin layout, the cross-platform
+SKILL.md compatibility checker, version-parity gate, and the product-voice spec
+convention) is adapted from `sorawit-w/cerby` (MIT) — ideas and structure, not
+verbatim prose. `scripts/check-skill-compat.py` is adapted from that project.
