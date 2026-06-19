@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/banner.png" alt="konthai — decode obfuscated Thai into standard Thai and English" width="100%"/>
+  <img src="assets/logo.png" alt="konthai" width="420"/>
 </p>
 
 <h1 align="center">konthai</h1>
@@ -72,6 +72,12 @@ never an average.
 ```
 /plugin marketplace add sorawit-w/konthai
 /plugin install konthai@konthai
+```
+
+Or via the cross-platform CLI:
+
+```
+npx skills add sorawit-w/konthai
 ```
 
 konthai fires on mangled / mixed-script Thai. It deliberately does **not** fire on clean
