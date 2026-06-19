@@ -17,6 +17,9 @@ standard Thai + English, honest about what it can't recover.
 - **`skills/konthai/references/eval-seed.md`** — the native-labelled calibration corpus.
 - **`skills/konthai/src/lu.py`** — deterministic ภาษาลู encode/decode, with the
   consonant-cluster transform (`แปล`) derived under test and written back into §3.5.
+  Decodes untrusted spans via **stdin** (shell-injection-safe; the skill is told to pipe
+  spans through a quoted heredoc, never to interpolate them into a shell argument). The
+  bare-`ู/ุ` rime ambiguity (e.g. `ลูดู`) is documented, not faked.
 - **`scripts/check-skill-compat.py`** — Codex frontmatter + cross-manifest version-parity gate.
 - **`VOICE.md`** — konthai's product voice (native-ear, street-fluent; honest over fluent).
 - Brand identity set in `assets/` (avatar, icon, logo, banner).

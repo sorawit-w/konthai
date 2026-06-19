@@ -10,6 +10,7 @@ Run: python3 -m pytest skills/konthai/tests/test_lu.py -v
 """
 
 import os
+import subprocess
 import sys
 
 import pytest
@@ -89,3 +90,47 @@ def test_round_trip(standard_thai):
         f"\n  encoded  : {encoded!r}"
         f"\n  decoded  : {decoded!r}"
     )
+
+
+# ---------------------------------------------------------------------------
+# CLI / stdin path (the shell-injection-safe invocation — see SKILL.md)
+# ---------------------------------------------------------------------------
+
+LU_PY = os.path.join(os.path.abspath(SRC), "lu.py")
+
+
+def _cli_stdin(op: str, text: str) -> str:
+    """Invoke the CLI with NO shell — argv list + stdin — mirroring the quoted
+    heredoc the skill is told to use for untrusted spans."""
+    r = subprocess.run(
+        [sys.executable, LU_PY, op], input=text, capture_output=True, text=True
+    )
+    assert r.returncode == 0, r.stderr
+    return r.stdout.rstrip("\n")
+
+
+def test_cli_stdin_decode():
+    assert norm(_cli_stdin("decode", "แลปลู")) == norm("แปล")
+
+
+def test_cli_untrusted_metachars_are_inert():
+    # A hostile span fed via stdin must be treated as plain TEXT — the shell never
+    # sees it, so command substitution can't fire. The literal metachars survive in
+    # the output (passed through), and the decodable prefix still decodes.
+    payload = "แลปลู$(echo PWNED)`echo PWNED`"
+    out = _cli_stdin("decode", payload)
+    assert "$(echo PWNED)" in out      # passed through literally, not executed
+    assert "แปล" in norm(out)           # the decodable prefix still decodes
+
+
+# ---------------------------------------------------------------------------
+# Documented decode ambiguity: bare ู/ุ rimes (decode-core §3.5)
+# ---------------------------------------------------------------------------
+
+def test_bare_uu_rime_is_documented_ambiguous():
+    # `ลูดู` genuinely means EITHER ดู (one pair) OR the literal "ลู"+"ดู". The codec
+    # takes the conservative literal reading rather than fabricating a decode; the
+    # skill layer surfaces such spans as `ambiguous`. See decode-core §3.5.
+    assert lu.decode("ลูดู") == "ลูดู"
+    # The literal word ลู inside ภาษาลู must still pass through correctly:
+    assert lu.decode("ลาภูลาษูลู") == "ภาษาลู"

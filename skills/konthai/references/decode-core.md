@@ -136,6 +136,16 @@ Verified by `decode("แลปลู") → แปล` in `../src/lu.py` (test `s
 Tone stays lossy. (The same robustness drops *spurious* finals leaked by sloppy อู-syllables —
 e.g. `หนุย`, `ลูง` — using the invariant that every ล-syllable initial is `ล`/`ซ`/`ห`-digraph.)
 
+**Decode ambiguity — bare `ู/ุ` rimes (a genuine limit, not full determinism).** A syllable
+whose rime is a *bare* `ู`/`ุ` (`ดู`, `หมู`, `ครู`) encodes to a ล-syllable that itself ends in
+`ู` — `ดู` → `ลู`+`ดู` = `ลูดู`. That `ู` looks like an อู-terminator, *and* `ลู` is also the
+literal word "ลู" (as in ภาษา·ลู). So `ลูดู` genuinely means **either** `ดู` (one pair) **or**
+the literal "ลู"+"ดู" — the rule cannot disambiguate. Per **flag > fabricate**, the codec takes
+the conservative reading (a terminal `ลู`/`ลุ` with no remaining อู-partner is the literal word,
+passed through; this is what keeps ภาษาลู itself decoding right), and the skill surfaces such a
+span as `ambiguous` / lower confidence rather than asserting a guess. ภาษาลู is a fixed rule for
+the general case; this narrow class is a documented ambiguity.
+
 ---
 
 ## 4. Score & decide (confidence)

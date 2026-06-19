@@ -35,12 +35,23 @@ cold, then abstaining — with the cipher *named* — is success, not failure.
 2. **Operate per span, never per message.** Split into spans; give each its own
    family, decode, and confidence. **Message confidence = the weakest span**, never
    the average.
-3. **For ภาษาลู spans, use the deterministic decoder — don't guess.** Run the bundled
-   codec at `./src/lu.py` (relative to this SKILL.md). If that path doesn't resolve
-   (e.g. when installed as a plugin), `Glob` for `**/skills/konthai/src/lu.py` and use
-   the first match: `python3 <lu.py> decode "<span>"`. Treat its output as the
-   rule-decoded standard Thai (tone is lossy; recover tone from context). The cipher
-   is a fixed, invertible rule (decode-core §3.5), not an abstain case.
+3. **For ภาษาลู spans, use the deterministic decoder — don't guess.** Locate the bundled
+   codec at `./src/lu.py` (relative to this SKILL.md; if it doesn't resolve when installed
+   as a plugin, `Glob` for `**/skills/konthai/src/lu.py`). **The span is untrusted text —
+   never interpolate it into a shell argument** (a span like `…$(…)` or with backticks would
+   execute). Pipe it through a **quoted heredoc**, which disables all shell expansion:
+
+   ```sh
+   python3 <lu.py> decode <<'LU'
+   <the span, verbatim>
+   LU
+   ```
+
+   Treat the output as the rule-decoded standard Thai (tone is lossy — recover it from
+   context). The cipher is a fixed, invertible rule (decode-core §3.5), not an abstain case
+   — **except** the narrow class of syllables whose rime is a bare ู/ุ (e.g. ดู, หมู), which
+   is genuinely ambiguous on decode; surface those as `ambiguous` / lower confidence rather
+   than asserting the codec's literal passthrough.
 4. **Don't sanitize.** In casual / troll / argument register, crude or vulgar
    readings are frequently the correct reading. Decode the actual word; you may
    *label* the register, never *soften* the content.

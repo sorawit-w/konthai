@@ -37,7 +37,11 @@ the **weakest** span, never an average. See [`SKILL.md`](SKILL.md) for the full 
 of guessing:
 
 ```sh
-python3 src/lu.py decode "ไหลหนุยซองลูงแลปลูลันอุนลี้นู้ลิซุ"
+# Untrusted input (DMs, comments) — pipe via a quoted heredoc so the shell does
+# NO expansion (a span like `…$(…)` must never reach the shell):
+python3 src/lu.py decode <<'LU'
+ไหลหนุยซองลูงแลปลูลันอุนลี้นู้ลิซุ
+LU
 # → ไหนลองแปลอันนี้ซิ   ("go on, try translating this one"; tone is lossy)
 ```
 

@@ -47,6 +47,20 @@ leaked consonant lands in front of the next ล-syllable. We recover generally f
 cipher invariant: EVERY ล-syllable's initial is ล, ซ, or a ห-digraph (หล/หน/…). So
 when reconstructing a ล-syllable we skip any leading consonants that are not a valid
 ล-syllable initial — they are leaked finals — without any per-string knowledge.
+
+--------------------------------------------------------------------------------
+Decode ambiguity: bare ู/ุ rimes (a genuine limit, not a bug)
+--------------------------------------------------------------------------------
+A syllable whose rime is a *bare* ู/ุ (common words: ดู, หมู, ครู) encodes to a ล-syllable
+that itself ends in ู — e.g. ดู -> ล-syllable ลู + อู-syllable ดู = ลูดู. That collides
+two ways: the ล-syllable's own ู looks like an อู-terminator, AND ลู is also the literal
+word "ลู" (as in ภาษา·ลู). So `ลูดู` is genuinely ambiguous — it can mean ดู (one pair) OR
+the literal sequence "ลู"+"ดู". A deterministic decoder cannot always be right here, so —
+true to "flag > fabricate" — we take the conservative reading: a `ลู`/`ลุ` whose pair has no
+remaining อู-partner is treated as the literal word and passed through unchanged (this is
+what keeps ภาษาลู itself decoding correctly). The skill layer surfaces such spans with lower
+confidence rather than asserting a guess. ภาษาลู is a fixed rule for the general case; this
+narrow class is a documented ambiguity, not full determinism.
 """
 
 from __future__ import annotations
@@ -305,11 +319,32 @@ def encode(text: str) -> str:
 # ===========================================================================
 
 def _main(argv) -> int:
-    if len(argv) < 3 or argv[1] not in ("encode", "decode"):
+    import sys
+
+    if len(argv) < 2 or argv[1] not in ("encode", "decode"):
         prog = argv[0] if argv else "lu.py"
-        print(f"usage: python3 {prog} {{encode|decode}} \"<text>\"", file=__import__("sys").stderr)
+        print(
+            f"usage: python3 {prog} {{encode|decode}} [TEXT]\n"
+            f"  Pass TEXT as an argument, OR omit it (or pass '-') to read stdin.\n"
+            f"  SECURITY: for untrusted input (DMs, comments) do NOT interpolate the\n"
+            f"  span into a shell argument — pipe it via a quoted heredoc so the shell\n"
+            f"  performs no expansion:\n"
+            f"      python3 {prog} decode <<'LU'\n"
+            f"      <span verbatim>\n"
+            f"      LU",
+            file=sys.stderr,
+        )
         return 2
-    op, text = argv[1], argv[2]
+    op = argv[1]
+    if len(argv) >= 3 and argv[2] != "-":
+        text = argv[2]
+    else:
+        # Read the span from stdin. The recommended caller pattern is a quoted
+        # heredoc ('LU'), which disables ALL shell expansion of the body — so a
+        # malicious span like `แลปลู$(...)` is never evaluated by the shell.
+        text = sys.stdin.read()
+        if text.endswith("\n"):
+            text = text[:-1]  # drop the single trailing newline a heredoc/echo adds
     print(encode(text) if op == "encode" else decode(text))
     return 0
 
