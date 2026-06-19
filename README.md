@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/logo.png" alt="konthai" width="420"/>
+  <img src="assets/avatar-square.png" alt="konthai" width="420"/>
 </p>
 
 <h1 align="center">konthai</h1>
