@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="../../assets/avatar.png" alt="konthai" width="180"/>
+  <img src="../../assets/banner.png" alt="konthai — decode obfuscated Thai into standard Thai and English" width="100%"/>
 </p>
 
 # konthai
