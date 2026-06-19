@@ -1,0 +1,24 @@
+# macOS
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+
+# impeccable plugin hook caches (per-directory, local-only)
+.impeccable/
+
+# Local skill-evaluation workspaces — regenerated per run, not tracked.
+# EXCEPT .eval/triggers/, the committed boundary corpus for konthai's triggering.
+.eval/*
+!.eval/triggers/
+
+# Asset working dirs — draft renders / mockups / rendering scripts (shipped art lives in assets/)
+docs/pixel-art/
+assets/_archive/
+assets/_drafts/
