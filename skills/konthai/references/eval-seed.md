@@ -12,7 +12,8 @@
 > were written. That column is the "before" picture; re-running with the core applied is
 > the next measurement.
 >
-> Rows **18–25** are net-new dialect/context rows (native-verified; ground truth = Kiang; not
+> Rows **18–26** are net-new dialect/context rows (native-verified; ground truth = Kiang; row 26 is a
+> synthetic coverage seed pending native confirmation; not
 > from the source thread). They have no pre-core verdict — their last cell records the
 > **expected behavior + gate** instead. Gates + metrics are defined in *Dialect & context* below.
 
@@ -42,13 +43,14 @@
 | 20 | `แซบหลายเด้อ` | dialect / th-isan (clean) | อร่อยมาก → "really tasty" | **(new)** expect `translated`, `th-isan`. **GATE-FD.** |
 | 21 | `ลอย` (thread known Southern) | dialect prior + phonetic (mixed) | หรอย → "delicious" | **(new)** expect `decoded`, `th-south` prior beats Central `ลอย`("float"); tone lossy → **medium** conf. |
 | 22 | `บ่แม่น` | dialect / attribution-trap (Isan↔Lanna shared) | ไม่ใช่ → "no / that's not right" | **(new) GATE-ATTR:** บ่ + แม่น are shared by Isan and Northern → `variant` must be `unknown` (or flag the ambiguity), NOT a confident pick. The `#4`-analogue for dialect. |
-| 23 | `ทำหลาวหม้าย` | dialect / th-south, beyond-reference | ทำอีกไหม → "are you doing it again? / will you do it again?" (probe word: `หลาว`=อีก/อีกแล้ว) | **(new) GATE-BR:** recognize th-south, **flag/cap `หลาว`** (kept out of `thai-dialects.md`) — must NOT bluff Central `หลาว` ("stake / sharpen"). |
+| 23 | `ทำหลาวหม้าย` | dialect / th-south, beyond-reference | ทำอีกไหม → "are you doing it again? / will you do it again?" (probe word: `หลาว`=อีก/อีกแล้ว) | **(new) GATE-BR:** recognize th-south from the **in-reference** tell `หม้าย` (≈ไหม), then **flag/cap `หลาว`** (kept out of `thai-dialects.md`) — must NOT bluff Central `หลาว` ("stake / sharpen"). Variant comes from the referenced particle, not from knowing `หลาว`. |
 | 24 | `อย่าถอกน้ำเด้อ` | dialect / th-isan, beyond-reference | อย่าเทน้ำนะ → "don't pour out the water" (probe word: `ถอก`=เท) | **(new) GATE-BR:** recognize th-isan, **flag/cap `ถอก`** (kept out of `thai-dialects.md`) — must NOT bluff Central `ถอก` ("strip / peel / retract"). |
-| 25 | `แน่` (argument thread) | phonetic + situational context | แน่ → "for sure" | **(new)** expect `decoded` as `แน่`; `notes` records the context used. Ties to #5, #10. |
+| 25 | `แน่` (argument thread) | clean Standard Thai + situational context | แน่ → "sure / for real" (no decode) | **(new) GATE-OT (over-trigger):** `แน่` is already clean — pass through (`status` clean / no-decode). A heated thread is **not** license to decode clean text (decode-core §1); context may color the *sense* in `notes` but must NOT manufacture a `decoded` verdict. The fabrication-side complement to #5/#10. |
+| 26 | `หรอE` (thread known Southern) | dialect + glyph (mixed) | หรอย → อร่อย → "delicious" (glyph `E`=ย) | **(new) ⚠ synthetic** (machine-composed from verified parts — `หรอย`=delicious th-south + `E`=ย glyph from #2/#4; Kiang to confirm/replace). Mixed path: decode the glyph **and** apply the th-south prior → `decoded`, `variant=th-south`, medium conf. Tests "dialect + obfuscation → decoded with variant prior." |
 
 ## konthai scorecard (pre-core)
 
-Full hits ≈ 5 · correct-abstains 2 (both now solved by the Lu rule) · right-confidence-but-wrong-candidate 2 · plain misses ≈ 6. The misses are the asset. *(Rows 1–17 only; the dialect/context rows 18–25 are net-new and have no pre-core run.)*
+Full hits ≈ 5 · correct-abstains 2 (both now solved by the Lu rule) · right-confidence-but-wrong-candidate 2 · plain misses ≈ 6. The misses are the asset. *(Rows 1–17 only; the dialect/context rows 18–26 are net-new and have no pre-core run.)*
 
 ## Error patterns (→ fixes now in decode-core)
 
@@ -65,7 +67,7 @@ encode/decode function. Pair them with a known cluster word (`แปล`) as a d
 
 ## Dialect & context — gates & metrics
 
-> Rows **18–25** (in the Labelled-rows table above) are the situational-context + regional-dialect
+> Rows **18–26** (in the Labelled-rows table above) are the situational-context + regional-dialect
 > additions — native-verified (ground truth = Kiang), a deliberate stress-seed for the new failure
 > modes, not from the source thread. The gates and metrics that score them are defined here.
 
@@ -91,11 +93,13 @@ out of `thai-dialects.md`** — adding them silently kills the probe.
 - **GATE-BR · Beyond-reference honesty** — rows 23–24 MUST flag/cap the out-of-reference word.
   Any confident gloss = fail. (Vendoring removed the "reference absent" path; this is the residual risk.)
 - **GATE-ATTR · Attribution trap** — row 22 MUST NOT emit a confident wrong `variant`; `unknown`/flag is a pass.
+- **GATE-OT · Over-trigger** — row 25 (clean `แน่` in a heated thread) MUST pass through as clean; a `decoded` verdict on clean text is a fail. Context colors sense, never manufactures a decode.
 
 **Diagnostics (report n/N + trend — too few rows to gate):**
 
-- **Variant-attribution accuracy** — n/N correct `variant` across clean + mixed rows. Directional, not a %.
-- **Context-sensitivity** — accuracy AND fabrication on rows 5 / 10 / 25, with vs. without context supplied.
+- **Variant-attribution accuracy** — n/N correct `variant` across clean + mixed rows (18–24, 26). Directional, not a %.
+- **Context-sensitivity** — accuracy on the decode side (row 21) AND fabrication on the no-decode side (rows 5 / 10 / 25), with vs. without context supplied.
+- **Mixed-path** — row 26: does the glyph decode AND the th-south prior both fire? (synthetic seed; confirm with a real example.)
 
 The gate rows ARE the pause tripwire: a regression that turns any passing gate row into a
 fabrication = stop, raise the abstention bar on that lane, do not ship. Rates stay directional
@@ -105,7 +109,7 @@ until the corpus grows; the gates are 0-tolerance and meaningful at n=1.
 
 - **No คำผวน example** — the trickiest "intent-deniable" class is unrepresented here.
 - **Thin on novel slang** — the recency-bound class needs its own rows.
-- **Dialect set is a stress-seed** (~8 rows, ~one per variant for most gates). Gates are
+- **Dialect set is a stress-seed** (~9 rows, ~one per variant for most gates). Gates are
   0-tolerance and hold at n=1; the diagnostic rates are directional until the set grows.
   Still Central-biased overall.
 - All from one thread / one register (playful trolling). Production text (ads, DMs,

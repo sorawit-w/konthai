@@ -44,7 +44,7 @@ words into Central Thai — recognize the Lanna word even inside an otherwise-Ce
 
 **Tells:**
 - Lexical: **`หรอย`** = อร่อย (delicious) — the classic one; do **not** mis-read as Central `ลอย` (float).
-- Particles: **`หว่า`** (assertive, ~นะ) · **`ดิ`** · **`แหละ`** used differently from Central.
+- Particles: **`หว่า`** (assertive, ~นะ) · **`ดิ`** · **`แหละ`** used differently from Central · **`หม้าย`** (question particle ≈ ไหม; also the negator, cf. ไม่/ม่าย).
 - Heavy **contraction / elision** — words shortened, speech fast and clipped. A Southern span often
   looks "missing letters" but is not corrupted.
 

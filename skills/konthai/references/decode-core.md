@@ -107,6 +107,11 @@ nearest Central word. Without the prior, Bias 1 confidently picks a wrong Centra
 `หรอย` (delicious) mis-read as `ลอย` (float). The variant is the prior that makes the plain reading
 correct.
 
+When a span's dialect tells are *all* shared across variants (e.g. `บ่`, `แม่น` in both Isan and
+Lanna), set `variant: unknown` rather than leaning to a named variant with a caveat — the gloss can be
+confident while the variant stays honestly unpinned. Name a variant only when a variant-specific tell
+is present.
+
 A *known-dialect thread* is itself a classification: it makes the span `family: dialect`, so resolving
 a Central-looking homophone toward the dialect lexicon — a Southern thread reading `ลอย` as `หรอย`
 (delicious) — is a *within-family* decode. Emit `decoded` with the `variant` at **capped (medium)**
