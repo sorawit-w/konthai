@@ -22,3 +22,4 @@ __pycache__/
 docs/pixel-art/
 assets/_archive/
 assets/_drafts/
+.idea/
