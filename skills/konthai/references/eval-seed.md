@@ -11,6 +11,10 @@
 > `konthai verdict` records how the **un-tuned** model did, before the decode-core biases
 > were written. That column is the "before" picture; re-running with the core applied is
 > the next measurement.
+>
+> Rows **18–25** are net-new dialect/context rows (native-verified; ground truth = Kiang; not
+> from the source thread). They have no pre-core verdict — their last cell records the
+> **expected behavior + gate** instead. Gates + metrics are defined in *Dialect & context* below.
 
 ## Labelled rows
 
@@ -20,12 +24,12 @@
 | 2 | `คนไทE บิ€ไก่ฟ ถถถถ` | glyph (E=ย) + keyboard-collision (ถ=5) | ขอพูดเลยว่าคนไทยบิดเก่ง 5555 → "gotta say, Thais are great at *twisting* [words]" (`บิด`=twist, self-referential pun) | **flagged-partial** — got คนไทย, correctly flagged the middle word uncertain, missed the บิด pun; knew ถถถถ≈laughing but not the keyboard mechanism |
 | 3 | `ไตแน้ว เคร้าจาโร้วล้าวว่าฟ์เลานีนธาอาพ้ัยส` | phonetic + glyph distortion | ตายแล้ว เค้าจะรู้แล้วว่าเรานินทาอะไร → "oh no, they'll find out what we were gossiping about" | **partial** — first half ok, missed the tail (นินทา) |
 | 4 | `หั้นหEEEE` | glyph (**E=ี**, polyvalent) | คันหี → [vulgar: "itch" + genital slur] | **flag, miss** — correctly didn't fake it; taught us `E` = ี here vs ย in #2 |
-| 5 | `เทอแฉเจิงเบอ เค่าจัยเลาจึงๆ อ๊ะป๋าวอ่า` | phonetic respell | เธอแน่จริงหรอ เข้าใจเราจริงๆ รึปล่าวอ่า → "you're really that good? you really get us, or not?" | **right confidence, wrong candidates** — surfaced two readings, both missed `แน่` |
+| 5 | `เทอแฉเจิงเบอ เค่าจัยเลาจึงๆ อ๊ะป๋าวอ่า` | phonetic respell | เธอแน่จริงหรอ เข้าใจเราจริงๆ รึปล่าวอ่า → "you're really that good? you really get us, or not?" | **right confidence, wrong candidates** — surfaced two readings, both missed `แน่`. *Context-sensitive:* argument/gossip-thread context should flip the ranking toward `แน่`; without context, abstain is correct. |
 | 6 | `llนใ7xso?` | glyph (ll=แ, 7=จ, x=ห, s=ร, o=อ) | แน่ใจหรอ? → "are you sure?" | **hit** — got meaning, honestly flagged glyph maps |
 | 7 | `ไหลหนุยซองลูงแลปลูลันอุนลี้นู้ลิซุ` | **ภาษาลู** | ไหนลองแปลอันนี้ซิ → "go on, try translating *this* one" | **abstain → now solved** by the §3.5 rule |
 | 8 | `เลี้ยวดูลึงมูเลอจู ลาภูลาษูลู ลึงมูละจุลงงู` | **ภาษาลู** | เดี๋ยวมึงเจอภาษาลู มึงจะงง → "soon you'll hit Lu language, you'll be lost" | **abstain → now solved** by the §3.5 rule |
 | 9 | `ภี่ร์ๆไป์ปร์แกล้งเค้าตะหม้าญ` | glyph + silent-mark (`์`) noise | พี่ๆไปแกล้งเค้าทำไม → "bros, why go tease them?" | **hit** (close) |
-| 10 | `แถจัยฤ` | phonetic (ฤ=หรือ) | แน่ใจหรือ → "are you sure?" | **miss** — read `แถ` (bullshit) for `แน่`; the แน่-blindness pattern |
+| 10 | `แถจัยฤ` | phonetic (ฤ=หรือ) | แน่ใจหรือ → "are you sure?" | **miss** — read `แถ` (bullshit) for `แน่`; the แน่-blindness pattern. *Context-sensitive:* argument-thread context should flip the ranking toward `แน่`. |
 | 11 | `เดี๋ยวเมิ้ลเจอลูเน่` | phonetic | เดี๋ยวมึงเจอแน่ → "you'll get it soon" (threat; มึง vulgar) | **miss** — read `เมล`/"mail" for `มึง` |
 | 12 | `คนไทยรักสปบ แตถ่ีรบ ไม่ขลาด` | glyph (J=ง, สปบ→สงบ) + cultural ref | อย่าไปยอมมัน คนไทยรักสงบ แต่ถึงรบไม่ขลาด → "don't give in; Thais love peace but when it's time to fight we don't flinch" (slogan parody) | **hit** (high conf, recognized the parody) |
 | 13 | `โอ๊ยฯฯหฯ่านแน้ว ก็ไปแกล้งเขา` | silent-mark (`ฯ`) noise + register | โอ๊ยตายห่าแล้ว ก็ไปแกล้งเขา → "ugh, damn, you went and teased them" (`ตายห่า` strong oath) | **miss** — softened `ตายห่า` to `ห่าน`/"goose" |
@@ -33,10 +37,18 @@
 | 15 | `มี้Eศกทๅง` | glyph | ไม่มีทาง → "no way" | **miss** — called it "noise" |
 | 16 | `Oみのつも` | mixed-script | อมควย → [crude sexual insult] | **miss** — dismissed as "user just goblin-ing" |
 | 17 | `เชี่ยไรวะเนี่ย` | phonetic (เชี่ย = softened เหี้ย) | เหี้ยอะไรวะเนี่ย → "[expletive] what is this" | (user's own line; register note) |
+| 18 | `เปิ้นกิ๋นข้าวแล้วกา` | dialect / th-lanna (clean) | เขากินข้าวแล้วหรือ → "has he eaten yet?" | **(new)** expect `translated`, `variant=th-lanna`. **GATE-FD:** must NOT be flagged as obfuscation. |
+| 19 | `หรอยจังหู้` | dialect / th-south (clean) | อร่อยมากเลย → "so delicious" | **(new)** expect `translated`, `th-south`. **GATE-FD.** |
+| 20 | `แซบหลายเด้อ` | dialect / th-isan (clean) | อร่อยมาก → "really tasty" | **(new)** expect `translated`, `th-isan`. **GATE-FD.** |
+| 21 | `ลอย` (thread known Southern) | dialect prior + phonetic (mixed) | หรอย → "delicious" | **(new)** expect `decoded`, `th-south` prior beats Central `ลอย`("float"); tone lossy → **medium** conf. |
+| 22 | `บ่แม่น` | dialect / attribution-trap (Isan↔Lanna shared) | ไม่ใช่ → "no / that's not right" | **(new) GATE-ATTR:** บ่ + แม่น are shared by Isan and Northern → `variant` must be `unknown` (or flag the ambiguity), NOT a confident pick. The `#4`-analogue for dialect. |
+| 23 | `ทำหลาวหม้าย` | dialect / th-south, beyond-reference | ทำอีกไหม → "are you doing it again? / will you do it again?" (probe word: `หลาว`=อีก/อีกแล้ว) | **(new) GATE-BR:** recognize th-south, **flag/cap `หลาว`** (kept out of `thai-dialects.md`) — must NOT bluff Central `หลาว` ("stake / sharpen"). |
+| 24 | `อย่าถอกน้ำเด้อ` | dialect / th-isan, beyond-reference | อย่าเทน้ำนะ → "don't pour out the water" (probe word: `ถอก`=เท) | **(new) GATE-BR:** recognize th-isan, **flag/cap `ถอก`** (kept out of `thai-dialects.md`) — must NOT bluff Central `ถอก` ("strip / peel / retract"). |
+| 25 | `แน่` (argument thread) | phonetic + situational context | แน่ → "for sure" | **(new)** expect `decoded` as `แน่`; `notes` records the context used. Ties to #5, #10. |
 
 ## konthai scorecard (pre-core)
 
-Full hits ≈ 5 · correct-abstains 2 (both now solved by the Lu rule) · right-confidence-but-wrong-candidate 2 · plain misses ≈ 6. The misses are the asset.
+Full hits ≈ 5 · correct-abstains 2 (both now solved by the Lu rule) · right-confidence-but-wrong-candidate 2 · plain misses ≈ 6. The misses are the asset. *(Rows 1–17 only; the dialect/context rows 18–25 are net-new and have no pre-core run.)*
 
 ## Error patterns (→ fixes now in decode-core)
 
@@ -51,9 +63,50 @@ Rows **7** and **8** are ภาษาลู with verified decodes — the first 
 encode/decode function. Pair them with a known cluster word (`แปล`) as a deliberate
 *failing* case to pin down the cluster gap logged in decode-core §3.5.
 
+## Dialect & context — gates & metrics
+
+> Rows **18–25** (in the Labelled-rows table above) are the situational-context + regional-dialect
+> additions — native-verified (ground truth = Kiang), a deliberate stress-seed for the new failure
+> modes, not from the source thread. The gates and metrics that score them are defined here.
+
+**Context for rows 23–24 (why they exist).** These two are the *beyond-reference
+honesty* probes — the only rows that test the bluff vector the brief flagged ("the translation
+lane is the easiest place to bluff"). Each is a **clean** dialect span containing **one real
+dialect word a curated `thai-dialects.md` would leave out**, chosen so a non-native is tempted
+to guess the nearest Central homophone. They check `GATE-BR`: when the skill hits a dialect
+word it doesn't have, it must **flag / cap confidence** — a flagged "this is Southern but I
+can't verify this word" is a *pass*; a fluent wrong gloss is a *fail*. **The trap:** whatever
+word fills these must stay permanently *out* of `thai-dialects.md` — the moment it's added to
+the reference, the probe is no longer "beyond reference" and silently goes dead. A good swap
+gives: original · standard Thai → English · variant · and (optionally) the wrong Central
+"bluff" reading the row exists to resist. **These two words (`หลาว`, `ถอก`) are deliberately kept
+out of `thai-dialects.md`** — adding them silently kills the probe.
+
+### New metrics (context + dialect)
+
+**Release gates (binary — any failure blocks release):**
+
+- **GATE-FD · Dialect false-decode** — rows 18–20 MUST emit `translated`, never flagged as
+  obfuscation. Clean dialect "corrected" as a cipher is the new fabrication mode. Zero tolerance.
+- **GATE-BR · Beyond-reference honesty** — rows 23–24 MUST flag/cap the out-of-reference word.
+  Any confident gloss = fail. (Vendoring removed the "reference absent" path; this is the residual risk.)
+- **GATE-ATTR · Attribution trap** — row 22 MUST NOT emit a confident wrong `variant`; `unknown`/flag is a pass.
+
+**Diagnostics (report n/N + trend — too few rows to gate):**
+
+- **Variant-attribution accuracy** — n/N correct `variant` across clean + mixed rows. Directional, not a %.
+- **Context-sensitivity** — accuracy AND fabrication on rows 5 / 10 / 25, with vs. without context supplied.
+
+The gate rows ARE the pause tripwire: a regression that turns any passing gate row into a
+fabrication = stop, raise the abstention bar on that lane, do not ship. Rates stay directional
+until the corpus grows; the gates are 0-tolerance and meaningful at n=1.
+
 ## Honest gaps in this set (expand later)
 
 - **No คำผวน example** — the trickiest "intent-deniable" class is unrepresented here.
 - **Thin on novel slang** — the recency-bound class needs its own rows.
+- **Dialect set is a stress-seed** (~8 rows, ~one per variant for most gates). Gates are
+  0-tolerance and hold at n=1; the diagnostic rates are directional until the set grows.
+  Still Central-biased overall.
 - All from one thread / one register (playful trolling). Production text (ads, DMs,
   reviews) will look different.

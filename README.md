@@ -109,6 +109,15 @@ aren't needed for v1:
 
 Both are addable later without reworking what ships now.
 
+## Sources
+
+The Thai dialect reference
+[`references/thai-dialects.md`](skills/konthai/references/thai-dialects.md) is vendored and adapted
+(Thai slice only, notes-only) from `references/locale-knowledge.md` in
+[`sorawit-w/agent-skills`](https://github.com/sorawit-w/agent-skills), synced 2026-06-20. It lets
+konthai recognize regional dialect (Northern / Southern / Isan) as a prior and translate clean
+dialect itself as a fallback — a single-owner copy, re-synced if the upstream Thai entries change.
+
 ## License
 
 MIT — see [LICENSE](LICENSE). Packaging pattern adapted from
