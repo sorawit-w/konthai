@@ -194,6 +194,29 @@ def _strip_lu_initial(lu_syl: str) -> tuple[str, str]:
     return lead, lu_syl[k:]
 
 
+def _has_lu_initial(lu_syl: str) -> bool:
+    """True iff lu_syl is a GENUINE ล-syllable — it contains a real Lu initial (ล / ซ /
+    ห-digraph) after any leading vowel or leaked-final junk. Mirrors _strip_lu_initial's scan.
+
+    Guards the trailing-leak strip: a clean/mixed token can put a non-empty but INVALID lu_syl
+    before a normal non-Lu ู/ุ (e.g. สนุก -> lu_syl 'ส'), and stripping there would eat a real
+    final (สนุก -> น). Only strip when the last syllable is actually a Lu pair.
+    """
+    n = len(lu_syl)
+    k = 0
+    while k < n:
+        c = lu_syl[k]
+        if c in _LEAD:
+            k += 1
+            continue
+        if c in _LU_SINGLE_INIT:
+            return True
+        if c == "ห" and k + 1 < n and _is_cons(lu_syl[k + 1]):
+            return True
+        k += 1
+    return False
+
+
 def _strip_trailing_leaked_final(tail: str) -> str:
     """Drop a leaked อู-syllable final that lands at token-end.
 
@@ -243,12 +266,13 @@ def decode(text: str) -> str:
     out = []
     for token in text.split(" "):
         pairs, tail = _parse_pairs(token)
-        if pairs and pairs[-1][0]:
+        if pairs and _has_lu_initial(pairs[-1][0]):
             # A leaked อู-final stranded after the LAST pair (no following ล-syllable to
             # absorb it) — strip it; see _strip_trailing_leaked_final. Gate on the LAST pair
-            # being a REAL Lu pair (lu_syl != ""). If the last pair is an empty-lu_syl literal
-            # (e.g. ลูก, ถูก, or the ถูก in mixed ละจูถูก -> จะถูก), the tail is that literal's
-            # own final, not a leak — keep it.
+            # being a GENUINE Lu syllable (real ล/ซ/ห-digraph initial). This excludes both the
+            # empty-lu_syl literal (ลูก, ถูก, ละจูถูก -> จะถูก) and the non-empty-but-invalid
+            # lu_syl a clean word can produce before a normal ู/ุ (สนุก -> 'ส'), whose tail is a
+            # real final, not a leak.
             tail = _strip_trailing_leaked_final(tail)
         decoded = "".join(_decode_pair(*p) for p in pairs) + tail
         out.append(decoded)

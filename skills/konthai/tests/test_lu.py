@@ -103,6 +103,15 @@ def test_trailing_leaked_final_before_punctuation():
     assert_decode("ลงงูบ...", "งง...")
 
 
+def test_invalid_lu_syllable_tail_not_stripped():
+    # Regression guard (Codex review round 4, PR #7): a clean word with consonants on both sides
+    # of a normal ู/ุ yields a non-empty but INVALID lu_syl (สนุก -> lu_syl 'ส', no Lu initial).
+    # The strip must NOT fire there. (lu.py only ever receives Lu spans, so the imperfect 'นก' is
+    # pre-existing decoder behavior on non-Lu input — the point is the final ก must NOT be eaten.)
+    assert "ก" in lu.decode("สนุก")
+    assert "ก" in lu.decode("ละจูสนุก")
+
+
 def test_decode_cluster_แปล():
     # The consonant-cluster case (decode-core §3.5 "known gap").
     # ล-syllable = แล (ล + leading-vowel rime แ);
