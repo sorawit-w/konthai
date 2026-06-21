@@ -86,6 +86,14 @@ def test_literal_uu_word_with_final_passthrough():
     assert lu.decode("หมูป่า") == "หมูป่า"
 
 
+def test_mixed_lu_then_literal_uu_final_passthrough():
+    # Regression guard (Codex review round 2, PR #7): a REAL Lu pair immediately followed by a
+    # literal ู/ุ-word with a final, no Thai space — ละจูถูก = จะ + ถูก. The last pair is the
+    # empty-lu_syl literal ถู, so its real final ก must NOT be stripped (gate on the LAST pair,
+    # not "any" pair). Without the fix this returned จะถู.
+    assert_decode("ละจูถูก", "จะถูก")
+
+
 def test_decode_cluster_แปล():
     # The consonant-cluster case (decode-core §3.5 "known gap").
     # ล-syllable = แล (ล + leading-vowel rime แ);

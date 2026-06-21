@@ -231,11 +231,12 @@ def decode(text: str) -> str:
     out = []
     for token in text.split(" "):
         pairs, tail = _parse_pairs(token)
-        if any(lu_syl for lu_syl, _, _ in pairs):
-            # A leaked อู-final stranded after the last pair (no following ล-syllable to
-            # absorb it) — strip it; see _strip_trailing_leaked_final. Gate on a REAL Lu
-            # pair (lu_syl != ""): a token whose only ู/ุ "pairs" are empty-lu_syl literals
-            # (e.g. ลูก, ถูก, ลูดู) is a literal passthrough — its final must be kept.
+        if pairs and pairs[-1][0]:
+            # A leaked อู-final stranded after the LAST pair (no following ล-syllable to
+            # absorb it) — strip it; see _strip_trailing_leaked_final. Gate on the LAST pair
+            # being a REAL Lu pair (lu_syl != ""). If the last pair is an empty-lu_syl literal
+            # (e.g. ลูก, ถูก, or the ถูก in mixed ละจูถูก -> จะถูก), the tail is that literal's
+            # own final, not a leak — keep it.
             tail = _strip_trailing_leaked_final(tail)
         decoded = "".join(_decode_pair(*p) for p in pairs) + tail
         out.append(decoded)
