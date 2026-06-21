@@ -76,6 +76,16 @@ def test_trailing_literal_with_vowel_is_kept():
     assert_decode("ละจูมา", "จะมา")
 
 
+def test_literal_uu_word_with_final_passthrough():
+    # Regression guard (Codex review, PR #7): a LITERAL word that just happens to contain
+    # ู/ุ + a final consonant (ลูก "child", ถูก "correct/cheap") forms only an empty-lu_syl
+    # pseudo-pair — NOT a real Lu pair. The trailing-final strip must NOT fire, or the final
+    # is corrupted (ลูก -> ลู). Exact equality: these are clean passthroughs, tone included.
+    assert lu.decode("ลูก") == "ลูก"
+    assert lu.decode("ถูก") == "ถูก"
+    assert lu.decode("หมูป่า") == "หมูป่า"
+
+
 def test_decode_cluster_แปล():
     # The consonant-cluster case (decode-core §3.5 "known gap").
     # ล-syllable = แล (ล + leading-vowel rime แ);
