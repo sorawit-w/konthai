@@ -52,7 +52,13 @@ cold, then abstaining — with the cipher *named* — is success, not failure.
    — **except** the narrow class of syllables whose rime is a bare ู/ุ (e.g. ดู, หมู), which
    is genuinely ambiguous on decode; surface those as `ambiguous` / lower confidence rather
    than asserting the codec's literal passthrough.
-4. **Don't sanitize.** In casual / troll / argument register, crude or vulgar
+4. **Recognize regional dialect; don't decode it as corruption.** If a span is Northern/คำเมือง,
+   Southern/ภาษาใต้, or Isan (from its own lexical tells or from supplied context), classify it
+   `family: dialect` with the `variant`. Clean dialect → translate (`status: translated`) using the
+   vendored `references/thai-dialects.md` — konthai owns this, no sibling skill required. Flag any word
+   beyond the reference rather than bluffing. Dialect mixed with obfuscation → decode, using the
+   variant as a candidate prior.
+5. **Don't sanitize.** In casual / troll / argument register, crude or vulgar
    readings are frequently the correct reading. Decode the actual word; you may
    *label* the register, never *soften* the content.
 
@@ -63,9 +69,10 @@ Emit, for each decoded span:
 | field | meaning |
 |---|---|
 | `span` | the original surface text |
-| `family` | clean · romanized · phonetic · glyph · keyboard · lu · ro-leet · kamphuan · slang |
-| `status` | decoded · ambiguous · cipher-detected · unreadable-encoding · no-decode |
-| `decoded_th` | recovered standard Thai (omit if not `decoded`) |
+| `family` | clean · romanized · phonetic · glyph · keyboard · lu · ro-leet · kamphuan · slang · dialect |
+| `status` | clean · decoded · ambiguous · translated · cipher-detected · unreadable-encoding · no-decode |
+| `variant` | regional variant when `family=dialect`: `th-lanna` (Northern) · `th-south` (Southern) · `th-isan` · `unknown` (omit otherwise) |
+| `decoded_th` | recovered standard Thai (also used for the Central Thai of a `translated` span; omit if not `decoded`/`translated`) |
 | `english` | English reading |
 | `confidence` | your honest read — high / medium / low |
 | `notes` | which glyph/sound/cipher step mapped to what; register label if useful |
@@ -79,6 +86,9 @@ Emit, for each decoded span:
 
 ## When NOT to fire
 
-Clean standard Thai (decode nothing — over-triggering is a real failure mode);
+Clean *Standard* Thai (decode nothing — over-triggering is a real failure mode);
 i18n / locale-file translation (→ `i18n`); single-word in-context definition
-(→ `define`). See `references/eval-seed.md` for the native-labelled calibration set.
+(→ `define`). Clean *dialect* (Northern/Southern/Isan) is **not** obfuscation — recognize it and
+translate via the vendored reference; don't "correct" it as if it were a cipher. A trolly-looking
+thread is not license to decode plain text. See `references/eval-seed.md` for the native-labelled
+calibration set.

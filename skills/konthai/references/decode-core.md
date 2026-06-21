@@ -45,6 +45,20 @@ context.** Treat the following only as *suspicion-raisers* (hints, not verdicts)
 A span is allowed to be **clean**. If the literal reading parses fine, decode nothing.
 (Over-triggering — inventing obfuscation where there is none — is a real failure mode.)
 
+**Parse-failure has three causes — classify *why* before decoding.**
+1. **Obfuscation** (สก๊อย, phonetic, glyph, keyboard, ภาษาลู, RO-leet, คำผวน, slang) → decode (the existing job).
+2. **Regional dialect** (Northern/คำเมือง, Southern/ภาษาใต้, Isan/อีสาน) → *not* corruption. A valid dialect word is not a broken Central word. Recognize the variant and translate (§5 `translated`); never "correct" it into Central Thai as if it were a cipher.
+3. **Genuine noise / render-loss** → abstain (`no-decode` / `unreadable-encoding`).
+
+Mixed forms exist — dialect lexicon *plus* obfuscation. Decode those, using the dialect as a candidate prior (§3).
+
+**Situational context is an optional prior — never a verdict.** When the caller supplies, or the
+surrounding chat reveals, platform / thread or reply / register / poster relationship, use it to
+(a) judge whether the literal reading makes sense *here*, and (b) weight candidate ranking (§3–§4).
+Context may **lower** confidence freely and **raise** it only within a span's existing family — it can
+never promote `ambiguous → decoded` (flag > fabricate holds). Record context-driven ranking changes in
+`notes`. A trolly-looking thread is not license to decode clean Thai.
+
 ---
 
 ## 2. Classify the span (family)
@@ -60,6 +74,7 @@ A span is allowed to be **clean**. If the literal reading parses fine, decode no
 | RO-leet | gamer-origin symbol / letter soup | partial at best |
 | คำผวน (spoonerism) | swapped rime + tone across two syllables; literal reading is an odd non-sequitur | mechanically swappable, but **intent is deniable → surface, don't assert** |
 | slang | a real Thai word with a non-literal current meaning (`ปัง`, `จึ้ง`, `มงลง`) | yes if known; else retrieve / flag — bounded by recency |
+| dialect | a real regional variant (Northern/คำเมือง, Southern/ภาษาใต้, Isan) — valid words, **not** corruption | translate via §5 `translated`; if mixed with obfuscation, decode with the variant as a prior (§3) |
 
 ---
 
@@ -86,6 +101,24 @@ same glyph is different letters in different words — `E` was ย in `คนไ
 Generate the plausible glyph interpretations, then let context rank them. Do not commit to
 the first mapping you find.
 
+**Dialect prior.** When the span is — or context says it is — Northern / Southern / Isan, draw
+candidates from *that variant's* lexicon (`references/thai-dialects.md`) before reaching for the
+nearest Central word. Without the prior, Bias 1 confidently picks a wrong Central homophone: Southern
+`หรอย` (delicious) mis-read as `ลอย` (float). The variant is the prior that makes the plain reading
+correct.
+
+When a span's dialect tells are *all* shared across variants (e.g. `บ่`, `แม่น` in both Isan and
+Lanna), set `variant: unknown` rather than leaning to a named variant with a caveat — the gloss can be
+confident while the variant stays honestly unpinned. Name a variant only when a variant-specific tell
+is present.
+
+A *known-dialect thread* is itself a classification: it makes the span `family: dialect`, so resolving
+a Central-looking homophone toward the dialect lexicon — a Southern thread reading `ลอย` as `หรอย`
+(delicious) — is a *within-family* decode. Emit `decoded` with the `variant` at **capped (medium)**
+confidence for the residual ambiguity, not `ambiguous`. This is narrow: only an actual dialect signal
+reclassifies the span. A merely trolly or heated thread is **not** a dialect and never licenses
+decoding clean Central text (§1) — that path stays blocked.
+
 For each suspect span: produce 1–3 candidate standard-Thai readings, each carrying its
 reasoning (which glyph / sound / cipher step maps to which letters).
 
@@ -101,8 +134,8 @@ reasoning (which glyph / sound / cipher step maps to which letters).
 2. **อู-syllable** = **C** + `อู`/`อุ` — original initial kept, vowel forced to อู.
 
 **To decode:** pair the syllables → take the rime from the ล-syllable and the initial from
-the อู-syllable → recombine as `C + R`. Tone is recovered from markers/context (the lossy
-part).
+the อู-syllable → recombine as `C + R`. Tone is recovered from markers/context — including
+situational context when available (the lossy part).
 
 Worked example — a real comment from the eval set:
 
@@ -160,6 +193,8 @@ the general case; this narrow class is a documented ambiguity.
 - Cluster the votes on the **decoded standard-Thai form**, not the full output string
   (otherwise cosmetic wording differences fake a disagreement).
 - Anchor the raw numbers against a labelled set before trusting any threshold.
+- Context and dialect are priors bound by the same floor: they may lower confidence freely and
+  raise it only *within* a span's existing family. A prior never converts `ambiguous → decoded`.
 
 ---
 
@@ -170,11 +205,19 @@ collapsing them is itself an error.
 
 | Status | When | What to emit |
 |---|---|---|
+| `clean` | the span parses literally as standard Thai — nothing to decode (pairs with `family: clean`) | the text unchanged + English; context may color the *sense* in `notes` but must not invent a non-clean reading. If a whole message is clean, prefer not firing (SKILL.md "When NOT to fire") |
 | `decoded` | one reading clearly wins | standard Thai + English + high confidence |
 | `ambiguous` | 2+ readings genuinely compete (incl. คำผวน intent) | **surface all** readings, English for each, note "intent unclear" — never pick silently |
 | `cipher-detected` | a cipher family identified but you genuinely lack the rule/key — **not** ภาษาลู (that has a known rule, §3.5) | name the cipher, give a partial *only if labelled as partial*, **do not fabricate** a full translation |
 | `unreadable-encoding` | the bytes / glyphs did not arrive intact (font-fallback boxes `□▱`) | say "characters didn't render / can't read the encoding" — this is **not** noise and **not** a failed decode |
 | `no-decode` | genuine noise, no plausible reading exists | say so plainly |
+| `translated` | a clean regional-dialect span (no obfuscation) | recovered Central Thai in `decoded_th` + English + `variant` (`th-lanna`/`th-south`/`th-isan`/`unknown`); **cap confidence and flag the word** when it falls outside the vendored reference; provenance in `notes` |
+
+**Self-contained dialect translation (clean dialect).** Recognize the variant and translate with the
+vendored `references/thai-dialects.md` — konthai owns this, no sibling skill required. The cardinal
+rule still governs: the reference covers common cases, not every word, so when a span uses dialect
+vocabulary *beyond* the vendored notes, cap confidence and flag the unverifiable word. A flagged
+unknown beats a fluent wrong gloss — this lane is the easiest place to start bluffing; hold the line.
 
 `cipher-detected`, `unreadable-encoding`, and `no-decode` are three different outcomes.
 konthai once called `แปลกไหมครับ` and `ไม่มีทาง` "noise" — when they were perfectly
@@ -192,3 +235,5 @@ decodable and the glyphs simply hadn't rendered on its side. "I can't see these 
 - Average confidence across a message. → Report the weakest span.
 - Call anything you can't decode "noise." → Distinguish cipher / unreadable / genuine-noise.
 - Abstain on a cipher that has a known rule (e.g. ภาษาลู) because it looks scary. → Apply the rule (§3.5); abstain only for genuinely unkeyed ciphers.
+- Treat a dialect as a cipher to "fix." → Recognize the variant; translate (§5 `translated`). A living dialect is not broken Central Thai.
+- Bluff a dialect translation you only half-know (esp. words beyond `thai-dialects.md`). → Cap confidence; flag the unverifiable word.
