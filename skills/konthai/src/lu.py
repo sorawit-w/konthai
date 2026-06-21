@@ -204,10 +204,22 @@ def _strip_trailing_leaked_final(tail: str) -> str:
     here is a leak: strip a tail that is exactly tone marks + ONE consonant and nothing else
     (no vowel sign). A genuine trailing literal carries a vowel, so it is preserved.
     """
-    cons = [c for c in tail if _is_cons(c)]
-    marks = [c for c in tail if c in _TONE]
-    if len(cons) == 1 and len(cons) + len(marks) == len(tail):
-        return ""
+    # A real vowel sign (NB: _VOWEL_SIGNS includes tone marks via _ABOVE_BELOW — exclude them)
+    # means the tail is a real trailing literal — keep it whole (e.g. ละจูมา -> จะมา; the
+    # leaked-final case never carries a vowel).
+    if any(c in _VOWEL_SIGNS and c not in _TONE for c in tail):
+        return tail
+    # Peel a trailing suffix the leak check shouldn't see: punctuation, the ๆ repetition mark,
+    # emoji, etc. — anything that is neither a Thai consonant nor a tone mark. This keeps common
+    # comment forms (เหล่าตู่ว! -> เต่า!, ลงงูบๆ -> งงๆ): drop only the stranded final, keep the suffix.
+    i = len(tail)
+    while i > 0 and not (_is_cons(tail[i - 1]) or tail[i - 1] in _TONE):
+        i -= 1
+    head, suffix = tail[:i], tail[i:]
+    cons = [c for c in head if _is_cons(c)]
+    marks = [c for c in head if c in _TONE]
+    if len(cons) == 1 and len(cons) + len(marks) == len(head):
+        return suffix
     return tail
 
 

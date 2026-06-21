@@ -94,6 +94,15 @@ def test_mixed_lu_then_literal_uu_final_passthrough():
     assert_decode("ละจูถูก", "จะถูก")
 
 
+def test_trailing_leaked_final_before_punctuation():
+    # Regression guard (Codex review round 3, PR #7): a stranded final followed by punctuation
+    # or the ๆ repetition mark (no space) must drop ONLY the leaked final and keep the suffix.
+    # Without the fix these kept the final: เต่า่ว! / งงบๆ.
+    assert_decode("เหล่าตู่ว!", "เต่า!")
+    assert_decode("ลงงูบๆ", "งงๆ")
+    assert_decode("ลงงูบ...", "งง...")
+
+
 def test_decode_cluster_แปล():
     # The consonant-cluster case (decode-core §3.5 "known gap").
     # ล-syllable = แล (ล + leading-vowel rime แ);
