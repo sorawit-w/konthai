@@ -21,10 +21,10 @@ substitution map ships **inactive** as a Phase-2 lead. Cardinal rule intact.
   **inactive** (Phase-2 lead, not auto-decoded).
 - `src/verify_ro_glyphs.py` — identity-only checker (codepoints + Unicode names + garbled/dup
   scan) with a `__main__` self-check. Does **not** verify usage (native-eye job, Phase 2).
-- `references/eval-seed.md` rows **31–33** (⚠ inputs pending native confirmation; ground truth =
-  expected *behavior*) under new **GATE-RO**: name-the-cipher-and-abstain, strip affixes as
-  register, never decode from the inactive §1 map. Includes a no-over-trigger negative case and
-  an affix-wrapped clean-core positive case.
+- `references/eval-seed.md` rows **31–33** (native-confirmed; ground truth = Kiang) under new
+  **GATE-RO**: name-the-cipher-and-abstain, strip affixes as register, never decode from the
+  inactive §1 map. Row 31 (`ยεшηᴅᴀʀᴋ`) is the gold-standard abstain — unreadable even to a fluent
+  native; row 33 (`꧁ดาว꧂`) is the affix-wrapped clean-core positive case.
 
 ### Changed
 - `references/decode-core.md` — RO-leet family row (§2) reworded to **name the cipher and
