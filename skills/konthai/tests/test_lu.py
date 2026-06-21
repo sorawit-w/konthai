@@ -62,54 +62,16 @@ def test_decode_row7():
     )
 
 
-def test_decode_trailing_leaked_final():
-    # A leaked อู-final stranded at TOKEN-END (no following ล-syllable to absorb it).
-    # Report-INDEPENDENT: built from row-8 mechanics (ลงงู -> งง, ละจู -> จะ) with a stray
-    # consonant appended. Without the strip, decode would surface งงบ / จะบ.
-    assert_decode("ลงงูบ", "งง")
-    assert_decode("ละจูบ", "จะ")
-
-
-def test_trailing_literal_with_vowel_is_kept():
-    # Guard: a genuine trailing literal carries a vowel, so it must NOT be stripped.
-    # ละจู -> จะ, then a real trailing " มา" (has vowel า) stays.
-    assert_decode("ละจูมา", "จะมา")
-
-
-def test_literal_uu_word_with_final_passthrough():
-    # Regression guard (Codex review, PR #7): a LITERAL word that just happens to contain
-    # ู/ุ + a final consonant (ลูก "child", ถูก "correct/cheap") forms only an empty-lu_syl
-    # pseudo-pair — NOT a real Lu pair. The trailing-final strip must NOT fire, or the final
-    # is corrupted (ลูก -> ลู). Exact equality: these are clean passthroughs, tone included.
+def test_literal_uu_word_final_passthrough():
+    # Regression guard (Codex review, PR #7): a token whose ู/ุ belongs to a LITERAL word with a
+    # final consonant — standalone (ลูก "child", ถูก "correct") or mixed after a real Lu pair
+    # (ละจูถูก = จะ + ถูก) — must keep that final. The decoder appends the trailing remainder
+    # verbatim, so these pass without any final-stripping heuristic (which was reverted: it
+    # could not distinguish a leaked Lu final from a clean literal final — see decode-core §3.5).
     assert lu.decode("ลูก") == "ลูก"
     assert lu.decode("ถูก") == "ถูก"
     assert lu.decode("หมูป่า") == "หมูป่า"
-
-
-def test_mixed_lu_then_literal_uu_final_passthrough():
-    # Regression guard (Codex review round 2, PR #7): a REAL Lu pair immediately followed by a
-    # literal ู/ุ-word with a final, no Thai space — ละจูถูก = จะ + ถูก. The last pair is the
-    # empty-lu_syl literal ถู, so its real final ก must NOT be stripped (gate on the LAST pair,
-    # not "any" pair). Without the fix this returned จะถู.
     assert_decode("ละจูถูก", "จะถูก")
-
-
-def test_trailing_leaked_final_before_punctuation():
-    # Regression guard (Codex review round 3, PR #7): a stranded final followed by punctuation
-    # or the ๆ repetition mark (no space) must drop ONLY the leaked final and keep the suffix.
-    # Without the fix these kept the final: เต่า่ว! / งงบๆ.
-    assert_decode("เหล่าตู่ว!", "เต่า!")
-    assert_decode("ลงงูบๆ", "งงๆ")
-    assert_decode("ลงงูบ...", "งง...")
-
-
-def test_invalid_lu_syllable_tail_not_stripped():
-    # Regression guard (Codex review round 4, PR #7): a clean word with consonants on both sides
-    # of a normal ู/ุ yields a non-empty but INVALID lu_syl (สนุก -> lu_syl 'ส', no Lu initial).
-    # The strip must NOT fire there. (lu.py only ever receives Lu spans, so the imperfect 'นก' is
-    # pre-existing decoder behavior on non-Lu input — the point is the final ก must NOT be eaten.)
-    assert "ก" in lu.decode("สนุก")
-    assert "ก" in lu.decode("ละจูสนุก")
 
 
 def test_decode_cluster_แปล():

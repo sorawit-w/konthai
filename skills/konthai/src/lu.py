@@ -48,9 +48,10 @@ cipher invariant: EVERY ล-syllable's initial is ล, ซ, or a ห-digraph (�
 when reconstructing a ล-syllable we skip any leading consonants that are not a valid
 ล-syllable initial — they are leaked finals — without any per-string knowledge.
 
-The same leak can also strand at TOKEN-END, after the last pair, where there is no
-following ล-syllable to absorb it (เต่า + leaked ว -> เต่า่ว). _strip_trailing_leaked_final
-drops such a tail (tone marks + a single bare consonant, no vowel) on the same invariant.
+A leak that strands at TOKEN-END (no following ล-syllable to absorb it) is left as-is:
+e.g. a sloppy เหล่าตู่ว decodes to เต่า่ว, not เต่า. ภาษาลู is documented-lossy on sloppy
+input (decode-core §3.5), so the skill surfaces such spans at lower confidence rather than
+the codec guessing which trailing consonant is a leak vs a real literal final.
 
 --------------------------------------------------------------------------------
 Decode ambiguity: bare ู/ุ rimes (a genuine limit, not a bug)
@@ -194,58 +195,6 @@ def _strip_lu_initial(lu_syl: str) -> tuple[str, str]:
     return lead, lu_syl[k:]
 
 
-def _has_lu_initial(lu_syl: str) -> bool:
-    """True iff lu_syl is a GENUINE ล-syllable — it contains a real Lu initial (ล / ซ /
-    ห-digraph) after any leading vowel or leaked-final junk. Mirrors _strip_lu_initial's scan.
-
-    Guards the trailing-leak strip: a clean/mixed token can put a non-empty but INVALID lu_syl
-    before a normal non-Lu ู/ุ (e.g. สนุก -> lu_syl 'ส'), and stripping there would eat a real
-    final (สนุก -> น). Only strip when the last syllable is actually a Lu pair.
-    """
-    n = len(lu_syl)
-    k = 0
-    while k < n:
-        c = lu_syl[k]
-        if c in _LEAD:
-            k += 1
-            continue
-        if c in _LU_SINGLE_INIT:
-            return True
-        if c == "ห" and k + 1 < n and _is_cons(lu_syl[k + 1]):
-            return True
-        k += 1
-    return False
-
-
-def _strip_trailing_leaked_final(tail: str) -> str:
-    """Drop a leaked อู-syllable final that lands at token-end.
-
-    The อู-syllable is supposed to carry NO final; sloppy encodings leak one. MID-token
-    such a leak is absorbed by the next ล-syllable's initial-skip (see _strip_lu_initial),
-    but at TOKEN-END there is no following syllable, so decode() would otherwise append it
-    verbatim (เต่า + leaked ว -> เต่า่ว). By the cipher invariant, a bare trailing consonant
-    here is a leak: strip a tail that is exactly tone marks + ONE consonant and nothing else
-    (no vowel sign). A genuine trailing literal carries a vowel, so it is preserved.
-    """
-    # A real vowel sign (NB: _VOWEL_SIGNS includes tone marks via _ABOVE_BELOW — exclude them)
-    # means the tail is a real trailing literal — keep it whole (e.g. ละจูมา -> จะมา; the
-    # leaked-final case never carries a vowel).
-    if any(c in _VOWEL_SIGNS and c not in _TONE for c in tail):
-        return tail
-    # Peel a trailing suffix the leak check shouldn't see: punctuation, the ๆ repetition mark,
-    # emoji, etc. — anything that is neither a Thai consonant nor a tone mark. This keeps common
-    # comment forms (เหล่าตู่ว! -> เต่า!, ลงงูบๆ -> งงๆ): drop only the stranded final, keep the suffix.
-    i = len(tail)
-    while i > 0 and not (_is_cons(tail[i - 1]) or tail[i - 1] in _TONE):
-        i -= 1
-    head, suffix = tail[:i], tail[i:]
-    cons = [c for c in head if _is_cons(c)]
-    marks = [c for c in head if c in _TONE]
-    if len(cons) == 1 and len(cons) + len(marks) == len(head):
-        return suffix
-    return tail
-
-
 def _decode_pair(lu_syl: str, uu_init: str, uu_vowel: str) -> str:
     """Recombine one pair into C + R."""
     if lu_syl == "":
@@ -266,14 +215,6 @@ def decode(text: str) -> str:
     out = []
     for token in text.split(" "):
         pairs, tail = _parse_pairs(token)
-        if pairs and _has_lu_initial(pairs[-1][0]):
-            # A leaked อู-final stranded after the LAST pair (no following ล-syllable to
-            # absorb it) — strip it; see _strip_trailing_leaked_final. Gate on the LAST pair
-            # being a GENUINE Lu syllable (real ล/ซ/ห-digraph initial). This excludes both the
-            # empty-lu_syl literal (ลูก, ถูก, ละจูถูก -> จะถูก) and the non-empty-but-invalid
-            # lu_syl a clean word can produce before a normal ู/ุ (สนุก -> 'ส'), whose tail is a
-            # real final, not a leak.
-            tail = _strip_trailing_leaked_final(tail)
         decoded = "".join(_decode_pair(*p) for p in pairs) + tail
         out.append(decoded)
     return " ".join(out)
