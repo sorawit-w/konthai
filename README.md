@@ -90,7 +90,7 @@ konthai fires on mangled / mixed-script Thai. It deliberately does **not** fire 
 standard Thai (no over-decoding), on i18n / locale-file translation, or on single-word
 in-context definitions.
 
-Current release: `0.1.0`
+Current release: `0.2.0`
 
 ## How it works
 
