@@ -71,7 +71,7 @@ never promote `ambiguous → decoded` (flag > fabricate holds). Record context-d
 | glyph substitution (สก๊อย) | look-alike glyphs (`E`=ย/ี, `ll`=แ, `u`=บ, `J`=ง, `7`=จ) | yes — but maps are **context-dependent** (see Bias 3) |
 | keyboard-layout collision | chars from the same physical key with the layout toggled (`ถถถถ` = `5555`) | yes — **look up the layout map; do not assume key positions** |
 | ภาษาลู (Lu cipher) | syllables expanded into `ล-`/`หล-`/`ซ-` + `-ู` pairs | **fixed, invertible cipher → rule-decode** (see §3.5). Tone is the lossy part; sloppy written input can still resist clean segmentation |
-| RO-leet | gamer-origin symbol / letter soup | partial at best |
+| RO-leet / อักษรพิเศษ | gamer glyph-art: decorative affixes + cross-script glyph subs for Thai/Latin letters | strip decorative affixes (record as register, §3), **then look at the core: if it's clean Thai/ASCII, decode it normally; if it's glyph-soup, name the cipher and abstain** — emit `cipher-detected`, do not fabricate a reading. Background inventory (unverified, **do not auto-decode from it**): `references/ro-leet.md` |
 | คำผวน (spoonerism) | swapped rime + tone across two syllables; literal reading is an odd non-sequitur | mechanically swappable, but **intent is deniable → surface, don't assert** |
 | slang | a real Thai word with a non-literal current meaning (`ปัง`, `จึ้ง`, `มงลง`) | yes if known; else retrieve / flag — bounded by recency |
 | dialect | a real regional variant (Northern/คำเมือง, Southern/ภาษาใต้, Isan) — valid words, **not** corruption | translate via §5 `translated`; if mixed with obfuscation, decode with the variant as a prior (§3) |
@@ -141,6 +141,18 @@ several surface spellings — key the inventory by sound and list the variants.
 > `เห้อ`, `ว้าย`, `อุ๊ย`, `แหม`, `เชอะ`.
 > *Why:* konthai locked on the literal first token `อ้อ` ("oh I see") and lost `อ้อหอ` = `โอ้โห`.
 > Read the unit, not the prefix.
+
+**Strip decorative affixes first (RO / อักษรพิเศษ).** Gamer glyph-art names wrap a core
+in ornamental affixes — `๖ۣۜ` (flame prefix), `꧁ … ꧂` (frame brackets), `༒`, `†`,
+`ﾂ`/`ツ`/`シ`, `★ ☆ ✦ ✧ ♡ ⚡ ❄ ☽ ✿`. These carry **status/aesthetic signal, never
+phonetic content.** Identify and **strip** them from the span before decoding the core,
+and record the affix only as a **register/identity note** ("SEA-gamer status marker") —
+**never decode an affix as a letter.** The verified affix inventory + codepoints live in
+`references/ro-leet.md §0`. Stripping a verified ornament cannot fabricate a reading; a
+missed ornament just degrades to the same abstain. After stripping: if the core is clean
+Thai/ASCII, decode it normally; if the core is glyph-soup, name the cipher and abstain
+(`cipher-detected`) — the `ro-leet.md §1` substitution map is **inactive**, do not
+auto-decode from it (see §6).
 
 ---
 
@@ -257,3 +269,4 @@ decodable and the glyphs simply hadn't rendered on its side. "I can't see these 
 - Abstain on a cipher that has a known rule (e.g. ภาษาลู) because it looks scary. → Apply the rule (§3.5); abstain only for genuinely unkeyed ciphers.
 - Treat a dialect as a cipher to "fix." → Recognize the variant; translate (§5 `translated`). A living dialect is not broken Central Thai.
 - Bluff a dialect translation you only half-know (esp. words beyond `thai-dialects.md`). → Cap confidence; flag the unverifiable word.
+- Auto-decode an อักษรพิเศษ / RO span from the `ro-leet.md` substitution map. → That map is unverified and inactive; strip the decorative affixes, then name the cipher and abstain (`cipher-detected`) until native-checked fixtures exist.

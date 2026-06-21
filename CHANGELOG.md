@@ -3,6 +3,41 @@
 All notable changes to `konthai` are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/); versioning is semver.
 
+## [0.4.0] — 2026-06-20
+
+RO / อักษรพิเศษ "safe slice" — name-the-cipher-and-abstain. The RO-leet family was a stub
+(`partial at best`, no inventory). A community-sourced report + draft map were offered, but the
+report's in-scope core (the Thai-consonant substitution map) is unreliable: its body
+self-contradicts on codepoints and its own worked examples are linguistically wrong
+(`ยεш = เงา` claims `ย = ng`). Activating that map as a candidate generator would lower the
+abstention threshold and manufacture false-confident decodes. So konthai ships only the parts
+that **cannot produce a wrong decode**: it now *names* the อักษรพิเศษ cipher and abstains
+(`cipher-detected`), and recognizes/strips decorative affixes as register signal. The
+substitution map ships **inactive** as a Phase-2 lead. Cardinal rule intact.
+
+### Added
+- `references/ro-leet.md` — **DRAFT, NOT native-verified** candidate inventory. Only §0 (the
+  machine-verified decorative-affix strip-list) is wired in; the §1 substitution map is marked
+  **inactive** (Phase-2 lead, not auto-decoded).
+- `src/verify_ro_glyphs.py` — identity-only checker (codepoints + Unicode names + garbled/dup
+  scan) with a `__main__` self-check. Does **not** verify usage (native-eye job, Phase 2).
+- `references/eval-seed.md` rows **31–33** (native-confirmed; ground truth = Kiang) under new
+  **GATE-RO**: name-the-cipher-and-abstain, strip affixes as register, never decode from the
+  inactive §1 map. Row 31 (`ยεшηᴅᴀʀᴋ`) is the gold-standard abstain — unreadable even to a fluent
+  native; row 33 (`꧁ดาว꧂`) is the affix-wrapped clean-core positive case.
+
+### Changed
+- `references/decode-core.md` — RO-leet family row (§2) reworded to **name the cipher and
+  abstain** (route to `cipher-detected`), pointing at `ro-leet.md` as *background only*. New §3
+  decorative-affix-strip guidance (strip verified ornaments → record as register, never as
+  letters). New §6 anti-pattern: do not auto-decode an อักษรพิเศษ span from the inactive map.
+
+### Notes
+- `src/lu.py` and the ภาษาลู cipher rule are untouched.
+- The §8.2 substitution map is **deliberately dormant**. Phase 2 (activating it) is gated on
+  evidence it recovers real names konthai can't already read, plus native-verified fixtures and
+  an explicit abstain-by-default decode gate.
+
 ## [0.3.0] — 2026-06-20
 
 Casual-reduction decoding. Casual Thai is written phonetically and reductively — people type
