@@ -43,8 +43,9 @@ words into Central Thai — recognize the Lanna word even inside an otherwise-Ce
 ## th-south — Southern / ภาษาใต้  *(variant target → translated)*
 
 **Tells:**
-- Lexical: **`หรอย`** = อร่อย (delicious) — the classic one; do **not** mis-read as Central `ลอย` (float).
-- Particles: **`หว่า`** (assertive, ~นะ) · **`ดิ`** · **`แหละ`** used differently from Central · **`หม้าย`** (question particle ≈ ไหม; also the negator, cf. ไม่/ม่าย).
+- Lexical: **`หรอย`** = อร่อย (delicious) — the classic discriminating tell; do **not** mis-read as Central `ลอย` (float).
+- Primary particle: **`หม้าย`** (question particle ≈ ไหม; also the negator, cf. ไม่/ม่าย) — Southern-specific.
+- Secondary particles — **corroborating only, never a tell on their own:** **`หว่า`** (assertive ~นะ) · **`ดิ`** · **`แหละ`** also occur in casual *Central* Thai (`ไปดิ`, `นั่นแหละ`), so they must **not** make a span `dialect` by themselves; weigh them only when a primary Southern marker (`หรอย`/`หม้าย`) is already present.
 - Heavy **contraction / elision** — words shortened, speech fast and clipped. A Southern span often
   looks "missing letters" but is not corrupted.
 

@@ -50,16 +50,22 @@ konthai is a single **skill** — a loadable decode procedure plus one determini
 (the ภาษาลู cipher). The procedure was calibrated against a small, native-speaker-labelled
 set of real obfuscated-Thai comments; every rule in it fixes an *observed* miss, not a
 hypothetical one. It works span-by-span, classifies each into a family, decodes what it can,
-and is precise about *why* it stopped on the rest.
+and is precise about *why* it stopped on the rest. Regional dialect
+(Northern/Southern/Isan) is a separate lane — a valid dialect word is not broken
+Central Thai, so konthai recognizes the variant and translates clean dialect as a
+self-contained fallback, flagging dialect words beyond its vendored reference rather
+than guessing. This is a fallback, not a headline trigger.
 
 The discipline is one line: **flag > fabricate.** The target is the fluent-human ceiling — if
 a native speaker would abstain cold, abstaining (with the cipher named) is success, not
-failure. konthai distinguishes five different outcomes and never collapses them into "noise":
+failure. konthai distinguishes several outcomes and never collapses them into "noise":
 
 | status | meaning |
 |---|---|
+| `clean` | parses literally as standard Thai — nothing to decode |
 | `decoded` | one reading clearly wins |
 | `ambiguous` | readings genuinely compete — **all** are surfaced, none picked silently |
+| `translated` | a clean regional-dialect span (Northern/Southern/Isan) rendered to standard Thai — a fallback lane, not a trigger |
 | `cipher-detected` | a cipher it can't key — named, never faked |
 | `unreadable-encoding` | the bytes/glyphs didn't render — *not* a failed decode |
 | `no-decode` | genuine noise |
