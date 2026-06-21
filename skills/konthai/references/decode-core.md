@@ -89,6 +89,16 @@ escalate to a slang reading if the plain one does not fit context.
 > ("bullshit / deflect") — it grabbed the spicy reading first. `แน่จริง` / `แน่ใจ` are the
 > plain readings and should win unless context overrules them.
 
+**Casual Thai is written phonetically and reductively** — people type what a word *sounds
+like* said aloud, and drop whatever they can to type less. So a short span may be a
+**reduced content word**, not the particle it resembles. When generating candidates,
+**re-inflate plausibly-dropped medial vowels** (เ‑ือ, ‑ัว, เ‑ีย, ‑ือ) and test the resulting
+content word against context. Particle vs. reduced-content-word is a *ranking* question —
+the particle reading is a candidate, never the automatic default.
+> *Why:* konthai read `เหน่ย` as the particle เนอะ/เนี่ย when it is `เหนื่อย` ("tired") with the
+> เ‑ือ nucleus collapsed (`เหนื่อย → เหน่ย`). Same early-stop pattern as the แน่-blindness above,
+> now on word-class.
+
 **Bias 2 — register-aware, do not sanitize.** In casual / troll / argument register, do
 **not** down-weight crude or vulgar candidates — they are frequently the correct reading.
 Decode the actual word. You may *label* the register; never *soften* the content.
@@ -121,6 +131,16 @@ decoding clean Central text (§1) — that path stays blocked.
 
 For each suspect span: produce 1–3 candidate standard-Thai readings, each carrying its
 reasoning (which glyph / sound / cipher step maps to which letters).
+
+**Whole-span exclamation check — read the unit before splitting.** For 2–3 syllable
+interjection-shaped spans, match the **full surface** against the fixed exclamation inventory
+*before* splitting into token + elongation. A whole-form match beats a greedy leading-token
+match. Because casual Thai writes exclamations the way they sound aloud, one exclamation has
+several surface spellings — key the inventory by sound and list the variants.
+> Inventory (extend as observed): `โอ้โห` / `อ้อหอ` / `อู้หู` ("wow / geez"), `โห`, `โหย`, `เฮ้ย`,
+> `เห้อ`, `ว้าย`, `อุ๊ย`, `แหม`, `เชอะ`.
+> *Why:* konthai locked on the literal first token `อ้อ` ("oh I see") and lost `อ้อหอ` = `โอ้โห`.
+> Read the unit, not the prefix.
 
 ---
 

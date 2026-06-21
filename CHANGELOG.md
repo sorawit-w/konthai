@@ -3,6 +3,37 @@
 All notable changes to `konthai` are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/); versioning is semver.
 
+## [0.3.0] — 2026-06-20
+
+Casual-reduction decoding. Casual Thai is written phonetically and reductively — people type
+what a word *sounds like* said aloud and drop whatever they can to type less — so a short,
+particle-shaped span is often a reduced content word, and one exclamation has many surface
+spellings. konthai now re-inflates dropped vowels and reads exclamations as a whole unit. The
+cardinal rule is unchanged: each recall rule is paired with a clean-control GATE-OT row so it
+can't erode the over-trigger floor.
+
+### Added
+- `references/eval-seed.md` rows **27–30** (native-verified; ground truth = Kiang): the two
+  confirmed casual-batch misses — `เหน่ย→เหนื่อย` (vowel-collapse) and `อ้อหอ`/`อู้หู`→`โอ้โห`
+  (write-as-spoken) — plus clean-control rows `โอเค` and `เนอะ` under **GATE-OT** as the
+  precision guard.
+
+### Changed
+- `references/decode-core.md` — **Bias 1** gains a casual-reduction pass: re-inflate
+  plausibly-dropped medial vowels (เ‑ือ, ‑ัว, เ‑ีย, ‑ือ) so a reduced content word isn't
+  mis-read as the particle it resembles. **§3** gains a whole-span exclamation check (read the
+  unit before greedy-splitting) with a sound-keyed inventory listing surface variants
+  (`โอ้โห` / `อ้อหอ` / `อู้หู`).
+- `references/eval-seed.md` — GATE-OT extended to rows 29–30; header note documents the
+  rows 27–30 casual-reduction batch.
+
+### Notes
+- `src/lu.py` and the ภาษาลู cipher rule are untouched.
+- Modeled as an extension of **Bias 1** (phonetic-first), **not** a new bias — casual reduction
+  *is* phonetic spelling, already in scope. The broad `โX↔Xอ` glyph-swap proposed in the source
+  brief was rejected as over-broad (it would false-fire on clean `โต`/`โพ`/`โอเค`); only attested
+  exclamation surface variants are encoded.
+
 ## [0.2.0] — 2026-06-20
 
 Situational context and regional dialect as honesty-bounded priors. A parse-failure now
