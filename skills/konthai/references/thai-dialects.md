@@ -64,7 +64,7 @@ case below).
 
 **Tells:**
 - Negation **`บ่`** = ไม่ (not). *(Shared with Lanna — `บ่` alone does not pin the variant.)*
-- Particles: **`เด้อ/เด๊อ`** (~นะ) · **`สิ`** (future marker).
+- Particles: **`เด้อ/เด๊อ`** (~นะ, distinctive) · **`สิ`** as a **preverbal** future marker (`สิ`+verb) — *not* the Central sentence-final imperative `ไปสิ` ("go on!"), which is corroborating-only.
 - Lexical: **`แซบ`** = อร่อย (delicious) · **`เว้า`** = พูด (speak) · intensifiers `บักหำ` / `อีหลี`.
 - Agreement word **`แม่น`** = ใช่ (is / correct). *(Also used in Lanna — shared.)*
 
