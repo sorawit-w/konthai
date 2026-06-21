@@ -34,7 +34,7 @@ Written in standard Thai script in digital use (historical ตัวเมือ
 
 **Tells:**
 - Signature politeness particle **`เจ้า`** (the quintessential Lanna marker).
-- Lexical divergences: **`อู้`** = พูด (speak) · **`แอ่ว`** = เที่ยว (go out / visit) · **`ลำ`** = สวย/อร่อย (beautiful / tasty) · **`ตะกี้`** = just now.
+- Lexical divergences: **`อู้`** = พูด (speak) · **`แอ่ว`** = เที่ยว (go out / visit) · **`ลำ`** = สวย/อร่อย (beautiful / tasty).
 - Northern verb/pronoun forms and distinct tones; e.g. `เปิ้น` = เขา (he/she), `กิ๋น` = กิน (eat), question particle `กา`.
 
 **Register:** soft, polite. Younger urban speakers (Chiang Mai) often mix only a handful of คำเมือง

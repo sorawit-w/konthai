@@ -211,7 +211,7 @@ collapsing them is itself an error.
 | `cipher-detected` | a cipher family identified but you genuinely lack the rule/key — **not** ภาษาลู (that has a known rule, §3.5) | name the cipher, give a partial *only if labelled as partial*, **do not fabricate** a full translation |
 | `unreadable-encoding` | the bytes / glyphs did not arrive intact (font-fallback boxes `□▱`) | say "characters didn't render / can't read the encoding" — this is **not** noise and **not** a failed decode |
 | `no-decode` | genuine noise, no plausible reading exists | say so plainly |
-| `translated` | a clean regional-dialect span (no obfuscation) | recovered Central Thai (optional `standard_th`) + English + `variant` (`th-lanna`/`th-south`/`th-isan`/`unknown`); **cap confidence and flag the word** when it falls outside the vendored reference; provenance in `notes` |
+| `translated` | a clean regional-dialect span (no obfuscation) | recovered Central Thai in `decoded_th` + English + `variant` (`th-lanna`/`th-south`/`th-isan`/`unknown`); **cap confidence and flag the word** when it falls outside the vendored reference; provenance in `notes` |
 
 **Self-contained dialect translation (clean dialect).** Recognize the variant and translate with the
 vendored `references/thai-dialects.md` — konthai owns this, no sibling skill required. The cardinal
