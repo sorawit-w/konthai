@@ -16,6 +16,10 @@
 > synthetic coverage seed pending native confirmation; not
 > from the source thread). They have no pre-core verdict — their last cell records the
 > **expected behavior + gate** instead. Gates + metrics are defined in *Dialect & context* below.
+>
+> Rows **27–30** are the casual-reduction batch (native-verified; ground truth = Kiang). 27–28 are the
+> two confirmed misses — `เหน่ย→เหนื่อย` (vowel-collapse) and `อ้อหอ/อู้หู→โอ้โห` (write-as-spoken). 29–30
+> are clean-control rows: the precision guard so the new recall fixes don't erode the over-trigger floor.
 
 ## Labelled rows
 
@@ -47,6 +51,10 @@
 | 24 | `อย่าถอกน้ำเด้อ` | dialect / th-isan, beyond-reference | อย่าเทน้ำนะ → "don't pour out the water" (probe word: `ถอก`=เท) | **(new) GATE-BR:** recognize th-isan, **flag/cap `ถอก`** (kept out of `thai-dialects.md`) — must NOT bluff Central `ถอก` ("strip / peel / retract"). |
 | 25 | `แน่` (argument thread) | clean Standard Thai + situational context | แน่ → "sure / for real" (no decode) | **(new) GATE-OT (over-trigger):** `แน่` is already clean — emit `status: clean` (pass through unchanged). A heated thread is **not** license to decode clean text (decode-core §1); context may color the *sense* in `notes` but must NOT promote it to a non-clean reading (`decoded`/`translated`/cipher). The fabrication-side complement to #5/#10. |
 | 26 | `หรอE` (thread known Southern) | dialect + glyph (mixed) | หรอย → อร่อย → "delicious" (glyph `E`=ย) | **(new) ⚠ synthetic** (machine-composed from verified parts — `หรอย`=delicious th-south + `E`=ย glyph from #2/#4; Kiang to confirm/replace). Mixed path: decode the glyph **and** apply the th-south prior → `decoded`, `variant=th-south`, medium conf. Tests "dialect + obfuscation → decoded with variant prior." |
+| 27 | `เหน่ย` | phonetic / vowel-collapse | เหนื่อย → "tired" | **(new)** expect `decoded` via Bias-1 vowel re-inflation (`เ‑ือ` nucleus restored); must NOT settle for the particle เนอะ/เนี่ย. Word-class-downgrade trap. |
+| 28 | `อ้อหอ` (also `อู้หู`) | phonetic / write-as-spoken | โอ้โห → "wow / geez" | **(new)** expect `decoded` via the whole-span exclamation check; the whole-form must beat a greedy first-token `อ้อ` ("oh I see"). |
+| 29 | `โอเค` | clean (loanword) | โอเค → "okay" (no decode) | **(new) GATE-OT:** clean loanword — must stay `status: clean`. Precision guard: the new phonetic/exclamation rules must NOT fabricate a respell from a clean `โ`-word. |
+| 30 | `เนอะ` | clean (particle) | เนอะ → "right? / yeah" (no decode) | **(new) GATE-OT:** genuine sentence-final particle — the Bias-1 vowel re-inflation pass must NOT manufacture a content word. Guards the de-reduction pass against over-firing. |
 
 ## konthai scorecard (pre-core)
 
@@ -93,7 +101,7 @@ out of `thai-dialects.md`** — adding them silently kills the probe.
 - **GATE-BR · Beyond-reference honesty** — rows 23–24 MUST flag/cap the out-of-reference word.
   Any confident gloss = fail. (Vendoring removed the "reference absent" path; this is the residual risk.)
 - **GATE-ATTR · Attribution trap** — row 22 MUST NOT emit a confident wrong `variant`; `unknown`/flag is a pass.
-- **GATE-OT · Over-trigger** — row 25 (clean `แน่` in a heated thread) MUST emit `status: clean`; any non-clean verdict (`decoded`/`translated`/cipher) on clean text is a fail. Context colors sense, never manufactures a decode.
+- **GATE-OT · Over-trigger** — rows 25, 29, 30 (clean `แน่` in a heated thread · clean loanword `โอเค` · genuine particle `เนอะ`) MUST emit `status: clean`; any non-clean verdict (`decoded`/`translated`/cipher) on clean text is a fail. Context colors sense, never manufactures a decode; the vowel-collapse and exclamation rules must not fabricate a respell from a clean `โ`-word or re-inflate a real particle into a content word.
 
 **Diagnostics (report n/N + trend — too few rows to gate):**
 
