@@ -20,6 +20,11 @@
 > Rows **27–30** are the casual-reduction batch (native-verified; ground truth = Kiang). 27–28 are the
 > two confirmed misses — `เหน่ย→เหนื่อย` (vowel-collapse) and `อ้อหอ/อู้หู→โอ้โห` (write-as-spoken). 29–30
 > are clean-control rows: the precision guard so the new recall fixes don't erode the over-trigger floor.
+>
+> Rows **31–33** are the RO / อักษรพิเศษ **abstain-only** seed (⚠ inputs pending native confirmation;
+> ground truth = expected *behavior*, not a recovered name). They lock the safe-slice behavior:
+> name-the-cipher-and-abstain, strip decorative affixes as register, and **never** decode from the
+> inactive `ro-leet.md §1` map. Scored by **GATE-RO** below.
 
 ## Labelled rows
 
@@ -55,6 +60,9 @@
 | 28 | `อ้อหอ` (also `อู้หู`) | phonetic / write-as-spoken | โอ้โห → "wow / geez" | **(new)** expect `decoded` via the whole-span exclamation check; the whole-form must beat a greedy first-token `อ้อ` ("oh I see"). |
 | 29 | `โอเค` | clean (loanword) | โอเค → "okay" (no decode) | **(new) GATE-OT:** clean loanword — must stay `status: clean`. Precision guard: the new phonetic/exclamation rules must NOT fabricate a respell from a clean `โ`-word. |
 | 30 | `เนอะ` | clean (particle) | เนอะ → "right? / yeah" (no decode) | **(new) GATE-OT:** genuine sentence-final particle — the Bias-1 vowel re-inflation pass must NOT manufacture a content word. Guards the de-reduction pass against over-firing. |
+| 31 | `ยεшηᴅᴀʀᴋ` | RO / อักษรพิเศษ (cross-script glyph subs) | (no decode) → expected: name the cipher, abstain | **(new) ⚠ confirm-input** (real-looking อักษรพิเศษ glyph-art; Kiang to confirm authenticity). **GATE-RO:** recognize อักษรพิเศษ cross-script glyph-art, emit `cipher-detected`, abstain. MUST NOT fabricate a Thai reading (e.g. เงาดาร์ก) from the **inactive, unverified** `ro-leet.md §1` map — the source's own ш/ε/ย mappings are contested/wrong. The over-trigger complement for the RO lane. |
+| 32 | `๖ۣۜℜagͥήaͣrͫokﾂ` | RO / อักษรพิเศษ (affix-wrapped glyph-art) | (no decode) → expected: strip affixes, name the cipher, abstain | **(new) ⚠ confirm-input** (the canonical NickFinder name; Kiang to confirm). **GATE-RO:** strip `๖ۣۜ` (flame prefix) + `ﾂ` (suffix) as **register notes** ("SEA-gamer status marker"), never as letters; the core is decorative glyph-art → name the cipher, abstain. Tests affix-strip + still-abstain. |
+| 33 | `꧁ดาว꧂` | RO affix + clean Thai core (mixed) | ดาว → "star" (core), `꧁꧂` = ornamental frame (register) | **(new) ⚠ synthetic** (machine-composed: real Javanese frame `꧁꧂` + common name `ดาว`; Kiang to confirm/replace). **GATE-RO:** strip the frame brackets as ornament (NOT decoded as letters), then decode the clean core `ดาว` normally → core `clean`/`decoded` + affix noted as register. The affix-strip-enables-normal-decode positive case. |
 
 ## konthai scorecard (pre-core)
 
@@ -102,6 +110,7 @@ out of `thai-dialects.md`** — adding them silently kills the probe.
   Any confident gloss = fail. (Vendoring removed the "reference absent" path; this is the residual risk.)
 - **GATE-ATTR · Attribution trap** — row 22 MUST NOT emit a confident wrong `variant`; `unknown`/flag is a pass.
 - **GATE-OT · Over-trigger** — rows 25, 29, 30 (clean `แน่` in a heated thread · clean loanword `โอเค` · genuine particle `เนอะ`) MUST emit `status: clean`; any non-clean verdict (`decoded`/`translated`/cipher) on clean text is a fail. Context colors sense, never manufactures a decode; the vowel-collapse and exclamation rules must not fabricate a respell from a clean `โ`-word or re-inflate a real particle into a content word.
+- **GATE-RO · RO / อักษรพิเศษ abstain** — rows 31–32 MUST emit `cipher-detected` (name the cipher, abstain) and MUST NOT fabricate a Thai reading from the **inactive, unverified** `ro-leet.md §1` substitution map. Row 33 MUST strip the decorative affix as register (never decode it as a letter) and decode only the clean core. Any decode sourced from the §1 map = fail. This gate holds the RO lane at abstain until the map is native-verified (Phase 2).
 
 **Diagnostics (report n/N + trend — too few rows to gate):**
 
