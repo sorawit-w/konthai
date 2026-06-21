@@ -1,9 +1,12 @@
 # ro-leet — RO / อักษรพิเศษ glyph decoding (data reference)
 
-> Pointed to from `decode-core.md` §2, family row **RO-leet**. This is a **candidate
-> inventory, not a 1:1 codec.** Obey **Bias 3 (polyvalence)**: a glyph maps to a *set*
-> of possible letters — generate the plausible readings, then let context rank them.
-> Obey the **cardinal rule**: a flagged span you can't stand behind beats a confident
+> Pointed to from `decode-core.md` §2, family row **RO-leet**. This is a **Phase-2
+> candidate inventory, not an active codec — and NOT wired into the decoder today.**
+> Do **not** generate readings from this file: an RO / อักษรพิเศษ span is named and
+> abstained (`cipher-detected`) per `decode-core.md`. *When/if §1 is activated in
+> Phase 2*, it will obey **Bias 3 (polyvalence)** — a glyph maps to a *set* of possible
+> letters; generate plausible readings, then let context rank them. The **cardinal
+> rule** governs throughout: a flagged span you can't stand behind beats a confident
 > wrong decode.
 
 > **⚠️ WIRING STATUS — the §1 substitution map is INACTIVE.** Only §0 (the
