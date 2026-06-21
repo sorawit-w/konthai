@@ -62,6 +62,20 @@ def test_decode_row7():
     )
 
 
+def test_decode_trailing_leaked_final():
+    # A leaked อู-final stranded at TOKEN-END (no following ล-syllable to absorb it).
+    # Report-INDEPENDENT: built from row-8 mechanics (ลงงู -> งง, ละจู -> จะ) with a stray
+    # consonant appended. Without the strip, decode would surface งงบ / จะบ.
+    assert_decode("ลงงูบ", "งง")
+    assert_decode("ละจูบ", "จะ")
+
+
+def test_trailing_literal_with_vowel_is_kept():
+    # Guard: a genuine trailing literal carries a vowel, so it must NOT be stripped.
+    # ละจู -> จะ, then a real trailing " มา" (has vowel า) stays.
+    assert_decode("ละจูมา", "จะมา")
+
+
 def test_decode_cluster_แปล():
     # The consonant-cluster case (decode-core §3.5 "known gap").
     # ล-syllable = แล (ล + leading-vowel rime แ);

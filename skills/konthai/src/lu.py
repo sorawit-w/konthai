@@ -48,6 +48,10 @@ cipher invariant: EVERY ล-syllable's initial is ล, ซ, or a ห-digraph (�
 when reconstructing a ล-syllable we skip any leading consonants that are not a valid
 ล-syllable initial — they are leaked finals — without any per-string knowledge.
 
+The same leak can also strand at TOKEN-END, after the last pair, where there is no
+following ล-syllable to absorb it (เต่า + leaked ว -> เต่า่ว). _strip_trailing_leaked_final
+drops such a tail (tone marks + a single bare consonant, no vowel) on the same invariant.
+
 --------------------------------------------------------------------------------
 Decode ambiguity: bare ู/ุ rimes (a genuine limit, not a bug)
 --------------------------------------------------------------------------------
@@ -190,6 +194,23 @@ def _strip_lu_initial(lu_syl: str) -> tuple[str, str]:
     return lead, lu_syl[k:]
 
 
+def _strip_trailing_leaked_final(tail: str) -> str:
+    """Drop a leaked อู-syllable final that lands at token-end.
+
+    The อู-syllable is supposed to carry NO final; sloppy encodings leak one. MID-token
+    such a leak is absorbed by the next ล-syllable's initial-skip (see _strip_lu_initial),
+    but at TOKEN-END there is no following syllable, so decode() would otherwise append it
+    verbatim (เต่า + leaked ว -> เต่า่ว). By the cipher invariant, a bare trailing consonant
+    here is a leak: strip a tail that is exactly tone marks + ONE consonant and nothing else
+    (no vowel sign). A genuine trailing literal carries a vowel, so it is preserved.
+    """
+    cons = [c for c in tail if _is_cons(c)]
+    marks = [c for c in tail if c in _TONE]
+    if len(cons) == 1 and len(cons) + len(marks) == len(tail):
+        return ""
+    return tail
+
+
 def _decode_pair(lu_syl: str, uu_init: str, uu_vowel: str) -> str:
     """Recombine one pair into C + R."""
     if lu_syl == "":
@@ -210,6 +231,10 @@ def decode(text: str) -> str:
     out = []
     for token in text.split(" "):
         pairs, tail = _parse_pairs(token)
+        if pairs:
+            # A leaked อู-final stranded after the last pair (no following ล-syllable to
+            # absorb it) — strip it; see _strip_trailing_leaked_final.
+            tail = _strip_trailing_leaked_final(tail)
         decoded = "".join(_decode_pair(*p) for p in pairs) + tail
         out.append(decoded)
     return " ".join(out)

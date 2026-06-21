@@ -69,7 +69,7 @@ never promote `ambiguous → decoded` (flag > fabricate holds). Record context-d
 | romanized / karaoke | Thai written in Latin phonetics (`kon tai`) | yes, high |
 | phonetic respell | Thai letters, casual sound-spelling (`ค้าบ`, `มั้ย`, `รึปล่าว`) | yes, high |
 | glyph substitution (สก๊อย) | look-alike glyphs (`E`=ย/ี, `ll`=แ, `u`=บ, `J`=ง, `7`=จ) | yes — but maps are **context-dependent** (see Bias 3) |
-| keyboard-layout collision | chars from the same physical key with the layout toggled (`ถถถถ` = `5555`) | yes — **look up the layout map; do not assume key positions** |
+| keyboard-layout collision | chars from the same physical key with the layout toggled (`ถถถถ` = `5555`) | yes — **look up the layout map in `references/keyboard-kedmanee.md`; do not assume key positions**. Decode from the table, both directions (Thai-on-QWERTY and English-on-Thai-layout). |
 | ภาษาลู (Lu cipher) | syllables expanded into `ล-`/`หล-`/`ซ-` + `-ู` pairs | **fixed, invertible cipher → rule-decode** (see §3.5). Tone is the lossy part; sloppy written input can still resist clean segmentation |
 | RO-leet / อักษรพิเศษ | gamer glyph-art: decorative affixes + cross-script glyph subs for Thai/Latin letters | strip decorative affixes (record as register, §3), **then look at the core: if it's clean Thai/ASCII, decode it normally; if it's glyph-soup, name the cipher and abstain** — emit `cipher-detected`, do not fabricate a reading. Background inventory (unverified, **do not auto-decode from it**): `references/ro-leet.md` |
 | คำผวน (spoonerism) | swapped rime + tone across two syllables; literal reading is an odd non-sequitur | mechanically swappable, but **intent is deniable → surface, don't assert** |
@@ -264,6 +264,7 @@ decodable and the glyphs simply hadn't rendered on its side. "I can't see these 
 - Reach for the slang / clever reading first. → Try the plain phonetic reading first.
 - Soften vulgar words. → Decode them; label register if useful.
 - Lock a glyph→letter map. → Treat glyphs as context-dependent.
+- Guess keyboard key positions from memory. → Look them up in `references/keyboard-kedmanee.md` (both directions); don't trust an illustrative example's gold over the table.
 - Average confidence across a message. → Report the weakest span.
 - Call anything you can't decode "noise." → Distinguish cipher / unreadable / genuine-noise.
 - Abstain on a cipher that has a known rule (e.g. ภาษาลู) because it looks scary. → Apply the rule (§3.5); abstain only for genuinely unkeyed ciphers.

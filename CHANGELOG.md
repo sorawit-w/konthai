@@ -3,6 +3,42 @@
 All notable changes to `konthai` are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/); versioning is semver.
 
+## [0.5.0] — 2026-06-20
+
+Keyboard-collision reference + a ภาษาลู codec fix, surfaced by scoring konthai against an
+external 100-phrase corpus. The eval showed konthai at-ceiling on 7 of 8 families; it exposed
+exactly two fixable gaps and one process risk. The keyboard family decoded correctly but only
+from model memory — violating decode-core's own "look up the layout map." `lu.py` recovered Lu
+*cores* correctly but leaked a final at token-end (`เต่า` → `เต่า่ว`). And the source corpus is
+not native ground truth, so it is now quarantined. Cardinal rule intact.
+
+### Added
+- `references/keyboard-kedmanee.md` — the factual Thai Kedmanee ↔ US-QWERTY map (TIS 820-2538),
+  authored from the standard layout (not copied), both directions, with worked examples
+  (`mflv[`→`ทดสอบ`, `้ำสสน`→`hello`). The keyboard-collision family now decodes *from the table*.
+- `references/eval-seed.md` rows **34–35** (native-confirmed; ground truth = Kiang) under new
+  **GATE-KB**: decode keyboard collisions from the map, both directions; never `no-decode` a
+  mappable collision; never guess key positions.
+- `tests/test_lu.py` — token-end leaked-final fixtures (`ลงงูบ`→`งง`, `ละจูบ`→`จะ`) plus a
+  vowel-bearing-tail guard (`ละจูมา`→`จะมา`), all derived from cipher mechanics, not the report.
+
+### Changed
+- `src/lu.py` — `decode()` now strips a leaked อู-syllable final stranded at **token-end**
+  (tone marks + one bare consonant, no vowel) via the same invariant already used mid-token. The
+  report's Lu rows now decode to clean cores (`เต่า`, `ไม่ชอบ`, `คิดถึง`, `ไปเที่ยวกัน`, `เหงา`)
+  with no doubled finals. Genuinely-hard rows still surface as low-confidence.
+- `references/decode-core.md` — §2 keyboard row + a new §6 anti-pattern point at
+  `keyboard-kedmanee.md` ("look it up; don't trust an illustrative example's gold over the table").
+
+### Notes
+- The deep-research report (*"100 Tough Sample Phrases"*) is marked a **non-eval source** in
+  `eval-seed.md`: test-target inventory only. ~half its rows are constructed; several
+  reverse-keyboard rows have internally inconsistent gold. Only individually native-verified rows
+  graduate to the eval set.
+- Out of scope (deliberate): no new family for number-substitution (`ม4ก`) or English
+  code-switching (`noob อย่าฟีด`) — the eval showed both already decode fine; the gap is taxonomic.
+  No chasing the report's harder Lu mis-rows (possible mis-transcription, not codec bugs).
+
 ## [0.4.0] — 2026-06-20
 
 RO / อักษรพิเศษ "safe slice" — name-the-cipher-and-abstain. The RO-leet family was a stub
