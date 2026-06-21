@@ -62,6 +62,18 @@ def test_decode_row7():
     )
 
 
+def test_literal_uu_word_final_passthrough():
+    # Regression guard (Codex review, PR #7): a token whose ู/ุ belongs to a LITERAL word with a
+    # final consonant — standalone (ลูก "child", ถูก "correct") or mixed after a real Lu pair
+    # (ละจูถูก = จะ + ถูก) — must keep that final. The decoder appends the trailing remainder
+    # verbatim, so these pass without any final-stripping heuristic (which was reverted: it
+    # could not distinguish a leaked Lu final from a clean literal final — see decode-core §3.5).
+    assert lu.decode("ลูก") == "ลูก"
+    assert lu.decode("ถูก") == "ถูก"
+    assert lu.decode("หมูป่า") == "หมูป่า"
+    assert_decode("ละจูถูก", "จะถูก")
+
+
 def test_decode_cluster_แปล():
     # The consonant-cluster case (decode-core §3.5 "known gap").
     # ล-syllable = แล (ล + leading-vowel rime แ);

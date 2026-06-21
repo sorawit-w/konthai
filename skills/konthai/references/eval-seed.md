@@ -26,6 +26,20 @@
 > off a non-Thai Latin core ("Ragnarok"); 33 strips a frame off a clean Thai core (`ดาว`). They lock
 > the safe-slice behavior: name-the-cipher-and-abstain, strip decorative affixes as register, and
 > **never** decode from the inactive `ro-leet.md §1` map. Scored by **GATE-RO** below.
+>
+> Rows **34–35** are the keyboard-collision seed (native-verified; ground truth = Kiang). 34 is
+> Thai-on-QWERTY (`mflv[`→`ทดสอบ`); 35 is the reverse, English-on-Thai-layout (`้ำสสน`→`hello`).
+> They lock decode-*from-the-table* (`references/keyboard-kedmanee.md`), both directions. Scored by
+> **GATE-KB** below.
+>
+> **Non-eval source — the deep-research report** (`thai_machine_unreadable_text_report.md`, *"100
+> Tough Sample Phrases"*) is a **test-target inventory only, NOT ground truth.** ~half its rows are
+> self-labelled "Illustrative" (constructed); several reverse-keyboard rows have internally
+> inconsistent gold (#58 `สรรา` should be `สนนา` for "look"; #59/#61/#62 imply `r`=ไ when ไ=`w`); rows
+> #6/#7 cite satirical Uncyclopedia. **Never bulk-import it.** Only individually native-verified rows
+> graduate here (rows 34–35 are the first two). Candidates pending native confirmation, harvest later:
+> the *Attested* phonetic/karaoke/Lu rows (e.g. `gin khao yang?`, `ป่าว`, the Wongnai ภาษาลู set —
+> after a native check that each was transcribed faithfully).
 
 ## Labelled rows
 
@@ -64,6 +78,8 @@
 | 31 | `ยεшηᴅᴀʀᴋ` | RO / อักษรพิเศษ (cross-script glyph subs) | (no decode) → **native ground truth: unreadable even to a fluent Thai (Kiang)** — abstain | **(new, native-confirmed)** **GATE-RO:** the gold-standard abstain — a fluent native *also* can't read this, so matching that ceiling (name อักษรพิเศษ, emit `cipher-detected`) is success, not failure (cardinal rule). MUST NOT fabricate a Thai reading (e.g. the report's เงาดาร์ก) from the **inactive, unverified** `ro-leet.md §1` map — its ш/ε/ย mappings are contested/wrong. The over-trigger complement for the RO lane. |
 | 32 | `๖ۣۜℜagͥήaͣrͫokﾂ` | RO / อักษรพิเศษ (affix-wrapped Latin glyph-art) | renders Latin **"Ragnarok"** (a game name, not Thai); affixes = decoration | **(new, native-confirmed)** (Kiang: "basically *ragnarok* with wing-like characters"). **GATE-RO:** strip `๖ۣۜ` (flame prefix) + `ﾂ` (suffix) as **register notes** ("SEA-gamer status marker"), never as letters; the core is decorative Latin glyph-art → **not a Thai span**: may *note* it reads Latin "Ragnarok" but emit `cipher-detected`, do NOT produce a Thai `decoded`. Tests affix-strip + non-Thai recognition. |
 | 33 | `꧁ดาว꧂` | RO affix + clean Thai core (mixed) | ดาว → "star" (core), `꧁꧂` = ornamental frame (register) | **(new, native-confirmed)** (Kiang: "just `ดาว` with decoration"). **GATE-RO:** strip the frame brackets as ornament (NOT decoded as letters), then decode the clean core `ดาว` normally → core `clean`/`decoded` + affix noted as register. The affix-strip-enables-normal-decode positive case. |
+| 34 | `mflv[` | keyboard-collision (Thai on QWERTY layout) | ทดสอบ → "test" | **(new, native-confirmed)** **GATE-KB:** reverse-map from `references/keyboard-kedmanee.md` (m=ท f=ด l=ส v=อ [=บ) → `decoded` `ทดสอบ`, high conf. NOT `no-decode`/`unreadable` — a collision is decodable once mapped. Must decode from the table, not from memory. |
+| 35 | `้ำสสน` | reverse keyboard-collision (English on Thai layout) | hello → "hello" | **(new, native-confirmed)** **GATE-KB (reverse):** map Thai→QWERTY keys (้=h ำ=e ส=l ส=l น=o) → English `hello`. Confirm the result is a real word before asserting; trust the table over the report's inconsistent illustrative reverse rows (#58/#59/#61/#62). |
 
 ## konthai scorecard (pre-core)
 
@@ -112,6 +128,10 @@ out of `thai-dialects.md`** — adding them silently kills the probe.
 - **GATE-ATTR · Attribution trap** — row 22 MUST NOT emit a confident wrong `variant`; `unknown`/flag is a pass.
 - **GATE-OT · Over-trigger** — rows 25, 29, 30 (clean `แน่` in a heated thread · clean loanword `โอเค` · genuine particle `เนอะ`) MUST emit `status: clean`; any non-clean verdict (`decoded`/`translated`/cipher) on clean text is a fail. Context colors sense, never manufactures a decode; the vowel-collapse and exclamation rules must not fabricate a respell from a clean `โ`-word or re-inflate a real particle into a content word.
 - **GATE-RO · RO / อักษรพิเศษ abstain** — rows 31–32 MUST emit `cipher-detected` and MUST NOT fabricate a **Thai** reading from the **inactive, unverified** `ro-leet.md §1` substitution map. (Row 32 may *note* its core renders the Latin name "Ragnarok" — that's an observation, not a Thai `decoded`.) Row 33 MUST strip the decorative frame as register (never decode it as a letter) and decode only the clean core `ดาว`. Any decode sourced from the §1 map = fail. Holds the RO lane until the map is native-verified (Phase 2).
+- **GATE-KB · Keyboard-collision from the table** — rows 34–35 MUST `decode` via
+  `references/keyboard-kedmanee.md` (both directions), NOT emit `no-decode`/`unreadable-encoding` (a
+  collision is decodable once mapped) and NOT guess key positions from memory. The reverse direction
+  must yield a real English word or abstain. Trusting an illustrative example's gold over the table = fail.
 
 **Diagnostics (report n/N + trend — too few rows to gate):**
 

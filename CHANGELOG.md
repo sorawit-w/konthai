@@ -3,6 +3,41 @@
 All notable changes to `konthai` are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/); versioning is semver.
 
+## [0.5.0] — 2026-06-20
+
+Keyboard-collision reference + report quarantine, surfaced by scoring konthai against an
+external 100-phrase corpus. The eval showed konthai at-ceiling on 7 of 8 families. The keyboard
+family decoded correctly but only from model memory — violating decode-core's own "look up the
+layout map." And the source corpus is not native ground truth, so it is now quarantined.
+Cardinal rule intact.
+
+### Added
+- `references/keyboard-kedmanee.md` — the factual Thai Kedmanee ↔ US-QWERTY map (TIS 820-2538),
+  authored from the standard layout (not copied), both directions, with worked examples
+  (`mflv[`→`ทดสอบ`, `้ำสสน`→`hello`). The keyboard-collision family now decodes *from the table*.
+- `references/eval-seed.md` rows **34–35** (native-confirmed; ground truth = Kiang) under new
+  **GATE-KB**: decode keyboard collisions from the map, both directions; never `no-decode` a
+  mappable collision; never guess key positions.
+- `tests/test_lu.py` — literal-passthrough guard (`ลูก`, `ถูก`, `หมูป่า`, mixed `ละจูถูก`→`จะถูก`):
+  a ู/ุ-word's real final must survive (the decoder appends the trailing remainder verbatim).
+
+### Changed
+- `references/decode-core.md` — §2 keyboard row + a new §6 anti-pattern point at
+  `keyboard-kedmanee.md` ("look it up; don't trust an illustrative example's gold over the table").
+
+### Notes
+- The deep-research report (*"100 Tough Sample Phrases"*) is marked a **non-eval source** in
+  `eval-seed.md`: test-target inventory only. ~half its rows are constructed; several
+  reverse-keyboard rows have internally inconsistent gold. Only individually native-verified rows
+  graduate to the eval set.
+- A token-end leaked-final strip for sloppy ภาษาลู (`เต่า่ว`→`เต่า`) was prototyped and **reverted**:
+  the codec cannot locally distinguish a leaked Lu final from a clean literal final (a clean word
+  like `แล้ว`/`สนุก`/`ถูก` is structurally identical to a Lu syllable), so it corrupted clean text.
+  ภาษาลู stays documented-lossy on sloppy input (decode-core §3.5) and the skill surfaces such
+  spans at lower confidence — the honest behavior, no fragile heuristic.
+- Out of scope (deliberate): no new family for number-substitution (`ม4ก`) or English
+  code-switching (`noob อย่าฟีด`) — the eval showed both already decode fine; the gap is taxonomic.
+
 ## [0.4.0] — 2026-06-20
 
 RO / อักษรพิเศษ "safe slice" — name-the-cipher-and-abstain. The RO-leet family was a stub
