@@ -205,6 +205,7 @@ collapsing them is itself an error.
 
 | Status | When | What to emit |
 |---|---|---|
+| `clean` | the span parses literally as standard Thai — nothing to decode (pairs with `family: clean`) | the text unchanged + English; context may color the *sense* in `notes` but must not invent a non-clean reading. If a whole message is clean, prefer not firing (SKILL.md "When NOT to fire") |
 | `decoded` | one reading clearly wins | standard Thai + English + high confidence |
 | `ambiguous` | 2+ readings genuinely compete (incl. คำผวน intent) | **surface all** readings, English for each, note "intent unclear" — never pick silently |
 | `cipher-detected` | a cipher family identified but you genuinely lack the rule/key — **not** ภาษาลู (that has a known rule, §3.5) | name the cipher, give a partial *only if labelled as partial*, **do not fabricate** a full translation |

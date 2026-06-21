@@ -70,7 +70,7 @@ Emit, for each decoded span:
 |---|---|
 | `span` | the original surface text |
 | `family` | clean · romanized · phonetic · glyph · keyboard · lu · ro-leet · kamphuan · slang · dialect |
-| `status` | decoded · ambiguous · translated · cipher-detected · unreadable-encoding · no-decode |
+| `status` | clean · decoded · ambiguous · translated · cipher-detected · unreadable-encoding · no-decode |
 | `variant` | regional variant when `family=dialect`: `th-lanna` (Northern) · `th-south` (Southern) · `th-isan` · `unknown` (omit otherwise) |
 | `decoded_th` | recovered standard Thai (also used for the Central Thai of a `translated` span; omit if not `decoded`/`translated`) |
 | `english` | English reading |

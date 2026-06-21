@@ -45,7 +45,7 @@
 | 22 | `บ่แม่น` | dialect / attribution-trap (Isan↔Lanna shared) | ไม่ใช่ → "no / that's not right" | **(new) GATE-ATTR:** บ่ + แม่น are shared by Isan and Northern → `variant` must be `unknown` (or flag the ambiguity), NOT a confident pick. The `#4`-analogue for dialect. |
 | 23 | `ทำหลาวหม้าย` | dialect / th-south, beyond-reference | ทำอีกไหม → "are you doing it again? / will you do it again?" (probe word: `หลาว`=อีก/อีกแล้ว) | **(new) GATE-BR:** recognize th-south from the **in-reference** tell `หม้าย` (≈ไหม), then **flag/cap `หลาว`** (kept out of `thai-dialects.md`) — must NOT bluff Central `หลาว` ("stake / sharpen"). Variant comes from the referenced particle, not from knowing `หลาว`. |
 | 24 | `อย่าถอกน้ำเด้อ` | dialect / th-isan, beyond-reference | อย่าเทน้ำนะ → "don't pour out the water" (probe word: `ถอก`=เท) | **(new) GATE-BR:** recognize th-isan, **flag/cap `ถอก`** (kept out of `thai-dialects.md`) — must NOT bluff Central `ถอก` ("strip / peel / retract"). |
-| 25 | `แน่` (argument thread) | clean Standard Thai + situational context | แน่ → "sure / for real" (no decode) | **(new) GATE-OT (over-trigger):** `แน่` is already clean — pass through (`status` clean / no-decode). A heated thread is **not** license to decode clean text (decode-core §1); context may color the *sense* in `notes` but must NOT manufacture a `decoded` verdict. The fabrication-side complement to #5/#10. |
+| 25 | `แน่` (argument thread) | clean Standard Thai + situational context | แน่ → "sure / for real" (no decode) | **(new) GATE-OT (over-trigger):** `แน่` is already clean — emit `status: clean` (pass through unchanged). A heated thread is **not** license to decode clean text (decode-core §1); context may color the *sense* in `notes` but must NOT promote it to a non-clean reading (`decoded`/`translated`/cipher). The fabrication-side complement to #5/#10. |
 | 26 | `หรอE` (thread known Southern) | dialect + glyph (mixed) | หรอย → อร่อย → "delicious" (glyph `E`=ย) | **(new) ⚠ synthetic** (machine-composed from verified parts — `หรอย`=delicious th-south + `E`=ย glyph from #2/#4; Kiang to confirm/replace). Mixed path: decode the glyph **and** apply the th-south prior → `decoded`, `variant=th-south`, medium conf. Tests "dialect + obfuscation → decoded with variant prior." |
 
 ## konthai scorecard (pre-core)
@@ -93,7 +93,7 @@ out of `thai-dialects.md`** — adding them silently kills the probe.
 - **GATE-BR · Beyond-reference honesty** — rows 23–24 MUST flag/cap the out-of-reference word.
   Any confident gloss = fail. (Vendoring removed the "reference absent" path; this is the residual risk.)
 - **GATE-ATTR · Attribution trap** — row 22 MUST NOT emit a confident wrong `variant`; `unknown`/flag is a pass.
-- **GATE-OT · Over-trigger** — row 25 (clean `แน่` in a heated thread) MUST pass through as clean; a `decoded` verdict on clean text is a fail. Context colors sense, never manufactures a decode.
+- **GATE-OT · Over-trigger** — row 25 (clean `แน่` in a heated thread) MUST emit `status: clean`; any non-clean verdict (`decoded`/`translated`/cipher) on clean text is a fail. Context colors sense, never manufactures a decode.
 
 **Diagnostics (report n/N + trend — too few rows to gate):**
 
