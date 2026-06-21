@@ -127,4 +127,4 @@ dialect itself as a fallback — a single-owner copy, re-synced if the upstream 
 ## License
 
 MIT — see [LICENSE](LICENSE). Packaging pattern adapted from
-[`sorawit-w/cerby`](https://github.com/sorawit-w/cerby); see [NOTICE](NOTICE).
+[`sorawit-w/kerby`](https://github.com/sorawit-w/kerby); see [NOTICE](NOTICE).
