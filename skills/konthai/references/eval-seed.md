@@ -32,9 +32,9 @@
 > They lock decode-*from-the-table* (`references/keyboard-kedmanee.md`), both directions. Scored by
 > **GATE-KB** below.
 >
-> Rows **36–40** are the coded-referent seed (⚠ **all constructed** — invented targets
-> demonstrating the truncation-to-homophone mechanism per D6; **zero real coded slurs**;
-> pending Kiang's native confirmation of naturalness). 36–37 are the positive collisions
+> Rows **36–40** are the coded-referent seed (native-confirmed; ground truth = Kiang —
+> **all constructed** invented targets demonstrating the truncation-to-homophone mechanism
+> per D6; **zero real coded slurs**). 36–37 are the positive collisions
 > (must route `ambiguous` + register label); 38–40 are the precision guard (literal
 > attribute use · clean loanword · back-formation loanword — must stay `clean`).
 > Scored by **GATE-CR** below.
@@ -87,9 +87,9 @@
 | 33 | `꧁ดาว꧂` | RO affix + clean Thai core (mixed) | ดาว → "star" (core), `꧁꧂` = ornamental frame (register) | **(new, native-confirmed)** (Kiang: "just `ดาว` with decoration"). **GATE-RO:** strip the frame brackets as ornament (NOT decoded as letters), then decode the clean core `ดาว` normally → core `clean`/`decoded` + affix noted as register. The affix-strip-enables-normal-decode positive case. |
 | 34 | `mflv[` | keyboard-collision (Thai on QWERTY layout) | ทดสอบ → "test" | **(new, native-confirmed)** **GATE-KB:** reverse-map from `references/keyboard-kedmanee.md` (m=ท f=ด l=ส v=อ [=บ) → `decoded` `ทดสอบ`, high conf. NOT `no-decode`/`unreadable` — a collision is decodable once mapped. Must decode from the table, not from memory. |
 | 35 | `้ำสสน` | reverse keyboard-collision (English on Thai layout) | hello → "hello" | **(new, native-confirmed)** **GATE-KB (reverse):** map Thai→QWERTY keys (้=h ำ=e ส=l ส=l น=o) → English `hello`. Confirm the result is a real word before asserting; trust the table over the report's inconsistent illustrative reverse rows (#58/#59/#61/#62). |
-| 36 | `พวกเฉามากันเต็มซอยอีกแล้ว` (thread about workers from invented country "เฉาเซีย") | coded-referent (⚠ constructed) | ambiguous — plain: "the listless ones filled the alley again" / coded: "people from เฉาเซีย filled the alley again" (derogatory) | **(new) ⚠ constructed** **GATE-CR:** must emit `ambiguous`, BOTH readings + English each, `derogatory/coded` register note present. Asserting either reading alone = fail. |
-| 37 | `ตึกนั้นมีแต่พวกหืน` (thread about tenants from invented country "หืนเซีย") | coded-referent (⚠ constructed) | ambiguous — plain: "that building is full of rancid-smelling ones" / coded: "…full of people from หืนเซีย" (derogatory) | **(new) ⚠ constructed** **GATE-CR:** as #36 — the smell-word-as-identity variant of the same mechanism. |
-| 38 | `น้ำมันขวดนี้หืนมาก` | clean (literal attribute) | น้ำมันขวดนี้หืนมาก → "this bottle of oil has gone really rancid" (no decode) | **(new) ⚠ constructed** **GATE-CR (negative):** the same attribute word as #37 in plain literal use (smell word on actual food) — must stay `status: clean`, zero coded candidates. |
+| 36 | `พวกเฉามากันเต็มซอยอีกแล้ว` (thread about workers from invented country "เฉาเซีย") | coded-referent (constructed) | ambiguous — plain: "the listless ones filled the alley again" / coded: "people from เฉาเซีย filled the alley again" (derogatory) | **(new, native-confirmed; constructed)** **GATE-CR:** must emit `ambiguous`, BOTH readings + English each, `derogatory/coded` register note present. Asserting either reading alone = fail. |
+| 37 | `ตึกนั้นมีแต่พวกหืน` (thread about tenants from invented country "หืนเซีย") | coded-referent (constructed) | ambiguous — plain: "that building is full of rancid-smelling ones" / coded: "…full of people from หืนเซีย" (derogatory) | **(new, native-confirmed; constructed)** **GATE-CR:** as #36 — the smell-word-as-identity variant of the same mechanism. |
+| 38 | `น้ำมันขวดนี้หืนมาก` | clean (literal attribute) | น้ำมันขวดนี้หืนมาก → "this bottle of oil has gone really rancid" (no decode) | **(new, native-confirmed; constructed)** **GATE-CR (negative):** the same attribute word as #37 in plain literal use (smell word on actual food) — must stay `status: clean`, zero coded candidates. |
 | 39 | `ซื้อสกุชชี่มาใหม่สามอัน` | clean (loanword) | ซื้อสกุชชี่มาใหม่สามอัน → "bought three new squishies" (no decode) | **(new)** **GATE-CR (negative):** established loanword — must stay `clean`; no cipher verdict, no coded candidate. |
 | 40 | `หมาตัวนี้ฟลัฟฟี่มาก` | clean (novel loanword, back-formation) | หมาตัวนี้ฟลัฟฟี่มาก → "this dog is so fluffy" (no decode) | **(new)** **GATE-CR (negative):** unfamiliar all-Thai span must resolve via the §3 back-formation guard (ฟลัฟฟี่ → "fluffy"), NOT `cipher-detected`/`no-decode`, and NOT a coded candidate. |
 

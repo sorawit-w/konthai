@@ -24,8 +24,8 @@ exact outcome "flag > fabricate" exists to prevent. Design workshopped 2026-07-0
   candidate, never replaces the plain reading) and the **loanword back-formation guard**
   (back-transliterate before calling an unfamiliar all-Thai span a cipher: สกุชชี่ →
   "squishy").
-- `references/eval-seed.md` rows **36–40** (⚠ all constructed, pending native
-  confirmation) under new **GATE-CR**: 36–37 positive collisions must route `ambiguous`
+- `references/eval-seed.md` rows **36–40** (native-confirmed; all constructed invented
+  targets) under new **GATE-CR**: 36–37 positive collisions must route `ambiguous`
   + register label; 38–40 negatives (literal attribute · clean loanword · back-formation
   loanword) must stay `clean`.
 
