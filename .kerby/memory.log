@@ -1,0 +1,6 @@
+[2026-07-08T00:00:00Z]
+Task: Project onboarding via prepare
+Action: Populated kerby's context artifacts from code + git history: agent-context.yaml (project/runtime/stack/entryPoints/directories), CONTEXT.md (6 glossary terms + module map), .kerby/knowledge/ (3 confidence:low entries drafted from git log signal, each individually confirmed), .kerby/STATUS.md (onboarding stub).
+Files: agent-context.yaml, CONTEXT.md, .kerby/knowledge/KNOWLEDGE.md, .kerby/knowledge/decision-ro-leet-map-inactive.md, .kerby/knowledge/lesson-lu-tail-leak-unfixable-locally.md, .kerby/knowledge/lesson-dialect-false-tell-particles.md, .kerby/STATUS.md, .kerby/memory.log
+Status: DONE
+Notes: Stack = Python (stdlib-only ภาษาลู codec + pytest), no build/lint tooling in the repo. No agent-context.yaml.template or KNOWLEDGE.md.template shipped with this kerby install — both were hand-built from the workflow's own prose field spec rather than copied from a template file. Git repo present, full history available — no git-absence degrade needed.
