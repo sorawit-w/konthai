@@ -1,0 +1,31 @@
+project:
+  name: konthai
+  description: >
+    A single-skill Claude Code plugin that decodes deliberately obfuscated
+    Thai (ภาษาวิบัติ) into standard Thai + English, honest about what it
+    can't recover. Not an application — a loadable decode procedure
+    (skills/konthai/SKILL.md + references/decode-core.md) plus one
+    deterministic helper, the ภาษาลู cipher codec (src/lu.py).
+  type: agent-skill
+
+runtime:
+  primary: python
+  language: python
+  target: claude-code-skill
+
+stack:
+  test: pytest
+
+entryPoints:
+  - skills/konthai/SKILL.md
+  - skills/konthai/references/decode-core.md
+  - skills/konthai/src/lu.py
+
+directories:
+  source: skills/konthai/src
+  tests: skills/konthai/tests
+  docs: skills/konthai/references
+
+agentNotes: ""
+ai: {}
+preferences: {}

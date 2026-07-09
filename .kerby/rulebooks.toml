@@ -1,0 +1,11 @@
+[[rulebook]]
+id = "swe"
+version = "2.3.0"
+
+[[rulebook]]
+id = "skill-authoring"
+version = "1.2.0"
+
+[[rulebook]]
+id = "codex-review"
+version = "0.2.0"

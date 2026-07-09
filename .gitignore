@@ -23,3 +23,6 @@ docs/pixel-art/
 assets/_archive/
 assets/_drafts/
 .idea/
+
+# kerby project-state pin (machine-local) — written by `kerby install`
+.kerby/rulebooks.lock

@@ -3,6 +3,44 @@
 All notable changes to `konthai` are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/); versioning is semver.
 
+## [0.6.0] — 2026-07-08
+
+Coded-referent family + bounded retrieval. konthai silently full-missed euphemisms with
+no textual tell — an ordinary Thai word repurposed via truncation-to-homophone collision
+to point at a suppressed target. The sentence parses clean, so detection never fired: the
+exact outcome "flag > fabricate" exists to prevent. Design workshopped 2026-07-04
+(6-role panel); decisions D1–D8 locked. Cardinal rule intact.
+
+### Added
+- `references/decode-core.md` §3.6 — the `coded-referent` mechanism: a **two-condition
+  gate** (clean parse AND persistent sense–referent mismatch — one alone never fires),
+  default routing to `ambiguous` with both readings surfaced and a **mandatory
+  `derogatory/coded` register label**, plus **bounded retrieval escalation** (fires only
+  for `slang`/`coded-referent` below-medium confidence; results are evidence for ranking,
+  never verdicts; neutral queries; no/weak results degrade honestly). Worked example is
+  **constructed** (invented target); zero real coded slurs in the repo — the skill
+  documents the mechanism once, retrieval at runtime is the source of truth (D6).
+- `references/decode-core.md` §3 — Bias-1 interplay note (the coded path *adds* a
+  candidate, never replaces the plain reading) and the **loanword back-formation guard**
+  (back-transliterate before calling an unfamiliar all-Thai span a cipher: สกุชชี่ →
+  "squishy").
+- `references/eval-seed.md` rows **36–40** (native-confirmed; all constructed invented
+  targets) under new **GATE-CR**: 36–37 positive collisions must route `ambiguous`
+  + register label; 38–40 negatives (literal attribute · clean loanword · back-formation
+  loanword) must stay `clean`.
+
+### Changed
+- `SKILL.md` — `coded-referent` added to the family enum with its `ambiguous`-default +
+  register-label note; frontmatter mentions truncation/homophone euphemisms; body points
+  at decode-core §3.6 (SSOT, no rule duplication).
+
+### Notes
+- `src/lu.py` and its tests untouched.
+- Deferred: numeric retrieval-confidence thresholds (anchor on a labelled set first,
+  decode-core §4); confidence tiers on retrieved meanings; คำผวน fixture rows; real-world
+  §3.6 example(s) — the placeholder slot stays constructed until Kiang supplies vetted
+  candidates.
+
 ## [0.5.0] — 2026-06-20
 
 Keyboard-collision reference + report quarantine, surfaced by scoring konthai against an

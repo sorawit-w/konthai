@@ -3,7 +3,8 @@ name: konthai
 description: >
   Decodes obfuscated / "corrupted" Thai (ภาษาวิบัติ) into standard Thai and English
   — สก๊อย glyph substitution, phonetic respelling, karaoke-romanized Thai,
-  keyboard-layout collisions, the ภาษาลู cipher, RO-leet, gen-z slang, and คำผวน.
+  keyboard-layout collisions, the ภาษาลู cipher, RO-leet, gen-z slang, คำผวน, and
+  coded truncation/homophone euphemisms.
   Use when Thai text doesn't parse literally, looks deliberately mangled, or mixes
   scripts; when asked what an obfuscated Thai comment / ad / DM / username means; or
   when normal translation faceplants on Thai social text. Surfaces confidence and
@@ -61,6 +62,11 @@ cold, then abstaining — with the cipher *named* — is success, not failure.
 5. **Don't sanitize.** In casual / troll / argument register, crude or vulgar
    readings are frequently the correct reading. Decode the actual word; you may
    *label* the register, never *soften* the content.
+6. **Coded referents — gate first, then bounded retrieval.** A clean-parsing span whose
+   literal sense doesn't fit its referent (an attribute word applied to a group as
+   identity) may be a coded euphemism. Apply decode-core §3.6 — the two-condition gate,
+   `ambiguous` routing with a mandatory register label, and the bounded
+   retrieval-escalation rules — from there; don't re-derive them here.
 
 ## Output contract (per span)
 
@@ -69,7 +75,7 @@ Emit, for each decoded span:
 | field | meaning |
 |---|---|
 | `span` | the original surface text |
-| `family` | clean · romanized · phonetic · glyph · keyboard · lu · ro-leet · kamphuan · slang · dialect |
+| `family` | clean · romanized · phonetic · glyph · keyboard · lu · ro-leet · kamphuan · slang · coded-referent · dialect |
 | `status` | clean · decoded · ambiguous · translated · cipher-detected · unreadable-encoding · no-decode |
 | `variant` | regional variant when `family=dialect`: `th-lanna` (Northern) · `th-south` (Southern) · `th-isan` · `unknown` (omit otherwise) |
 | `decoded_th` | recovered standard Thai (also used for the Central Thai of a `translated` span; omit if not `decoded`/`translated`) |
@@ -79,6 +85,8 @@ Emit, for each decoded span:
 
 - `ambiguous` → **surface ALL competing readings** with English for each; never pick
   one silently. This includes คำผวน, whose intent is deniable — surface, don't assert.
+- `coded-referent` defaults to `ambiguous` — surface the plain AND the coded reading
+  (English for each) and always carry a `derogatory/coded` register label in `notes`.
 - `cipher-detected` / `unreadable-encoding` / `no-decode` are three *different*
   outcomes (a keyed cipher you lack ≠ glyphs that didn't render ≠ genuine noise).
   Never collapse them into "noise."
