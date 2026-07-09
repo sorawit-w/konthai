@@ -1,7 +1,7 @@
 {
   "name": "konthai",
   "version": "0.6.0",
-  "description": "konthai — reads deliberately obfuscated Thai (ภาษาวิบัติ) and gives you back standard Thai + English. Handles สก๊อย glyph-substitution, phonetic respelling, karaoke-romanized Thai, keyboard-layout collisions, the ภาษาลู cipher, RO-leet, gen-z slang, and คำผวน — on instinct, surfacing confidence and ambiguity honestly and flagging rather than faking when a span can't be cracked.",
+  "description": "konthai — reads deliberately obfuscated Thai (ภาษาวิบัติ) and gives you back standard Thai + English. Handles สก๊อย glyph-substitution, phonetic respelling, karaoke-romanized Thai, keyboard-layout collisions, the ภาษาลู cipher, RO-leet, gen-z slang, คำผวน, and coded truncation/homophone euphemisms — on instinct, surfacing confidence and ambiguity honestly and flagging rather than faking when a span can't be cracked.",
   "author": {
     "name": "sorawit-w",
     "url": "https://github.com/sorawit-w"
