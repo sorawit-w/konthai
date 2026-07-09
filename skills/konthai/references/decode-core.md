@@ -41,6 +41,11 @@ context.** Treat the following only as *suspicion-raisers* (hints, not verdicts)
 - elongated or doubled letters, silent marks (`์ ฯ ๆ`) sprinkled in odd places
 - a clean-looking phrase whose surface meaning is a non-sequitur in context → possible
   คำผวน or pun
+- a span that parses **clean** but whose literal sense doesn't fit its referent — an
+  attribute word (smell / texture / quality) applied to a nationality, group, or person
+  as *identity* rather than as a literal property, or a plain reading that stays a
+  persistent contextual non-sequitur → possible coded referent (§3.6). This tell requires
+  BOTH a clean parse AND a persistent sense–referent mismatch; either alone never fires.
 
 A span is allowed to be **clean**. If the literal reading parses fine, decode nothing.
 (Over-triggering — inventing obfuscation where there is none — is a real failure mode.)
@@ -73,6 +78,7 @@ never promote `ambiguous → decoded` (flag > fabricate holds). Record context-d
 | ภาษาลู (Lu cipher) | syllables expanded into `ล-`/`หล-`/`ซ-` + `-ู` pairs | **fixed, invertible cipher → rule-decode** (see §3.5). Tone is the lossy part; sloppy written input can still resist clean segmentation |
 | RO-leet / อักษรพิเศษ | gamer glyph-art: decorative affixes + cross-script glyph subs for Thai/Latin letters | strip decorative affixes (record as register, §3), **then look at the core: if it's clean Thai/ASCII, decode it normally; if it's glyph-soup, name the cipher and abstain** — emit `cipher-detected`, do not fabricate a reading. Background inventory (unverified, **do not auto-decode from it**): `references/ro-leet.md` |
 | คำผวน (spoonerism) | swapped rime + tone across two syllables; literal reading is an odd non-sequitur | mechanically swappable, but **intent is deniable → surface, don't assert** |
+| coded-referent | a clean word whose sense doesn't fit its referent; truncation/homophone collision with a suppressed target | **candidate-level only — intent is deniable → surface, don't assert** (§3.6). Default status `ambiguous`; `derogatory/coded` register label mandatory |
 | slang | a real Thai word with a non-literal current meaning (`ปัง`, `จึ้ง`, `มงลง`) | yes if known; else retrieve / flag — bounded by recency |
 | dialect | a real regional variant (Northern/คำเมือง, Southern/ภาษาใต้, Isan) — valid words, **not** corruption | translate via §5 `translated`; if mixed with obfuscation, decode with the variant as a prior (§3) |
 
@@ -110,6 +116,17 @@ Decode the actual word. You may *label* the register; never *soften* the content
 same glyph is different letters in different words — `E` was ย in `คนไทE` but ี in `คันหี`.
 Generate the plausible glyph interpretations, then let context rank them. Do not commit to
 the first mapping you find.
+
+**Coded-referent interplay — Bias 1 unchanged.** The coded path (§3.6) *adds* a candidate
+next to the plain reading; it never *replaces* it. Phonetic-first still generates the
+plain reading first, and that reading always survives to the output — a coded candidate
+is surfaced beside it as `ambiguous`, never asserted over it.
+
+**Loanword back-formation guard.** Before classifying an unfamiliar all-Thai span as
+`cipher-detected` / `no-decode`, generate an English back-transliteration candidate —
+reverse the karaoke direction (สกุชชี่ → "squishy"). Early-stage borrowings not yet
+mainstream look like non-words; a plausible English source word makes the span a clean
+loanword, not a cipher.
 
 **Dialect prior.** When the span is — or context says it is — Northern / Southern / Isan, draw
 candidates from *that variant's* lexicon (`references/thai-dialects.md`) before reaching for the
@@ -213,6 +230,60 @@ the general case; this narrow class is a documented ambiguity.
 
 ---
 
+## 3.6 Coded referents & retrieval escalation
+
+Some euphemisms carry **no textual tell**: an ordinary Thai word repurposed to point at a
+suppressed target — typically a demonym or taboo target truncated until its residual
+sound collides with an everyday attribute word. The sentence parses clean, so §1's
+parse-failure trigger never fires. Detection here is **semantic** (sense–referent
+mismatch), not lexical.
+
+**The two-condition gate.** Generate a coded candidate only when BOTH hold:
+
+1. the span parses clean — grammatical, with a plausible literal reading, AND
+2. a sense–referent mismatch persists in context — the word's literal sense does not fit
+   what it is applied to (e.g. a smell/attribute word applied to a nationality, group, or
+   person as identity rather than as a literal property), or the plain reading is a
+   persistent contextual non-sequitur.
+
+One condition alone NEVER fires. Over-triggering — reading a coded meaning into clean
+text — is the failure mode on this lane, not under-triggering.
+
+**Worked example (constructed — invented target, real mechanism).** Suppose an invented
+country "เฉาเซีย"; casual speech truncates its demonym until the residual sound is the
+everyday word เฉา ("wilted / listless"): คนเฉาเซีย → เฉา. In a thread about workers from
+เฉาเซีย, the span `พวกเฉามากันเต็มซอยอีกแล้ว` parses clean ("the listless ones filled the
+alley again") — but the attribute word is applied to people as *identity*, so the gate
+fires. Route: `status: ambiguous`; surface the plain reading ("listless people…") AND the
+coded reading ("people from เฉาเซีย…"), English for each; `notes` carries the mandatory
+`derogatory/coded` register label.
+
+<!-- placeholder: real-world worked example(s) pending — Kiang to supply vetted
+     candidates (D6, 2026-07-04). Until then this slot stays constructed. -->
+
+**Output routing.** Default status = `ambiguous`. Deniability is designed into these
+words — mirror the คำผวน handling exactly: surface both readings, never assert intent.
+**Register labeling is mandatory:** every coded decode carries a `derogatory/coded` note
+in `notes`, so downstream output (translation, moderation, summarization) cannot launder
+the term into neutral text.
+
+**Retrieval escalation (bounded).** Escalate to web retrieval only when BOTH hold:
+
+- family ∈ {`slang`, `coded-referent`}, AND
+- local candidate generation leaves confidence below medium.
+
+Rules:
+
+- Search results are **evidence for candidate ranking, never verdicts**.
+- No or weak results → keep `ambiguous` / low confidence. Coded terms are deliberately
+  under-documented — absence of documentation is not absence of meaning.
+- Query formation stays **neutral**: the term + surrounding context words. Never
+  pre-assert the slur reading in the query itself.
+- When a decode leans on retrieval, note recency in `notes` — retrieved meanings decay
+  fast.
+
+---
+
 ## 4. Score & decide (confidence)
 
 - Rank candidates by fit with the surrounding context (semantic plausibility — the LLM's
@@ -271,3 +342,5 @@ decodable and the glyphs simply hadn't rendered on its side. "I can't see these 
 - Treat a dialect as a cipher to "fix." → Recognize the variant; translate (§5 `translated`). A living dialect is not broken Central Thai.
 - Bluff a dialect translation you only half-know (esp. words beyond `thai-dialects.md`). → Cap confidence; flag the unverifiable word.
 - Auto-decode an อักษรพิเศษ / RO span from the `ro-leet.md` substitution map. → That map is unverified and inactive; strip the decorative affixes, then name the cipher and abstain (`cipher-detected`) until native-checked fixtures exist.
+- Read a coded meaning into clean text without a sense–referent mismatch. → Over-triggering is the failure mode on the coded-referent lane, not under-triggering (§3.6: both gate conditions or nothing).
+- Solve coded-referent recall with an in-repo slur list. → Retrieval at runtime is the source of truth; the repo documents the mechanism once and never enumerates live slurs.
