@@ -10,7 +10,8 @@
 
 Thai social text is full of writing that is *deliberately* unreadable to machines — สก๊อย
 glyph-swaps, phonetic respelling, karaoke-romanized Thai, keyboard-layout collisions, the
-ภาษาลู cipher, gamer leet, gen-z slang, spoonerisms. Auto-translators faceplant on it. A
+ภาษาลู cipher, gamer leet, gen-z slang, spoonerisms, coded truncation-euphemisms.
+Auto-translators faceplant on it. A
 fluent human reads it on instinct.
 
 konthai is that fluent human. It recovers standard Thai + an English reading — and when a
@@ -90,7 +91,7 @@ konthai fires on mangled / mixed-script Thai. It deliberately does **not** fire 
 standard Thai (no over-decoding), on i18n / locale-file translation, or on single-word
 in-context definitions.
 
-Current release: `0.5.0`
+Current release: `0.6.0`
 
 ## How it works
 
