@@ -31,3 +31,5 @@ ground truth; do not "correct" them against model intuition.
   `CHANGELOG.md`, and `Current release: \`x.y.z\`` in `README.md`. Run
   `python3 scripts/check-skill-compat.py` to verify.
 - **Codex contract:** SKILL.md `description` ≤ 1024 characters or Codex silently skips the skill.
+
+At session start, invoke the `kerby` skill (args: load) to load kerby guardrails into context.
